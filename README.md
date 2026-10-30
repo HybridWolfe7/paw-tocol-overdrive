@@ -40,7 +40,7 @@ A zero-dependency HTML5 Canvas 2D arcade survival game, live hardware stress-tes
 
 ---
 
-## 🕹️ GTA-Style Secret Keyboard Cheats (Public) & Hidden Admin Panel
+## 🕹️ Secret Keyboard Cheats (Public) & Hidden Admin Panel
 
 The Sandbox Cheat Console is **completely hidden from the public UI** so normal players cannot see any cheat buttons or open a menu.
 
