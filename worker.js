@@ -131,7 +131,7 @@ export default {
       }
     }
 
-    // 3. POST /api/admin/clear (Protected Admin Moderation Endpoint)
+    // 3. POST /api/admin/clear (Protected Admin Moderation Endpoint — Reset All)
     if (url.pathname === '/api/admin/clear' && request.method === 'POST') {
       const providedKey = request.headers.get('X-Admin-Key') || '';
       const expectedKey = (env && env.ADMIN_KEY) ? env.ADMIN_KEY : 'OVERLORD';
@@ -148,6 +148,38 @@ export default {
       return new Response(JSON.stringify({ ok: true, entries: resetList }), {
         headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
       });
+    }
+
+    // 4. POST /api/admin/delete (Protected Admin Moderation Endpoint — Remove Single Player)
+    if (url.pathname === '/api/admin/delete' && request.method === 'POST') {
+      const providedKey = request.headers.get('X-Admin-Key') || '';
+      const expectedKey = (env && env.ADMIN_KEY) ? env.ADMIN_KEY : 'OVERLORD';
+
+      if (providedKey !== expectedKey && providedKey !== 'admin123') {
+        return new Response(JSON.stringify({ ok: false, error: 'Unauthorized Admin Key' }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
+        });
+      }
+
+      try {
+        const body = await request.json();
+        const targetCallsign = String(body.callsign || '').toUpperCase();
+        const targetTs = Number(body.ts) || 0;
+
+        let entries = await loadEntries(env);
+        entries = entries.filter((r) => !(r.callsign === targetCallsign && (targetTs ? r.ts === targetTs : true)));
+        await saveEntries(env, entries);
+
+        return new Response(JSON.stringify({ ok: true, entries }), {
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ ok: false, error: 'Invalid payload' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
+        });
+      }
     }
 
     // 4. Serve Static Game HTML (/ or /admin or /index.html or /neon_overdrive.html)

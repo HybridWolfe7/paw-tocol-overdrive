@@ -384,8 +384,8 @@
       position: fixed;
       bottom: 14px;
       right: 22px;
-      z-index: 25;
-      background: rgba(20, 12, 38, 0.88);
+      z-index: 45;
+      background: rgba(20, 12, 38, 0.94);
       border: 1px solid var(--accent);
       color: #ff80ab;
       font-family: 'Orbitron', sans-serif;
@@ -395,17 +395,61 @@
       padding: 9px 15px;
       border-radius: 99px;
       cursor: pointer;
-      box-shadow: 0 0 14px rgba(255, 64, 129, 0.3);
+      box-shadow: 0 0 18px rgba(255, 64, 129, 0.45);
     }
 
     #cheatDrawer {
       position: fixed;
       bottom: 56px;
       right: 22px;
-      width: 315px;
-      z-index: 25;
+      width: 345px;
+      max-height: 82vh;
+      overflow-y: auto;
+      z-index: 45;
       pointer-events: auto;
       border-color: var(--accent);
+      background: rgba(12, 8, 24, 0.96);
+    }
+
+    .admin-player-list {
+      max-height: 110px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 6px 0;
+      padding: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+    }
+
+    .admin-player-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      padding: 3px 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 4px;
+      color: #e0f7fa;
+    }
+
+    .admin-del-btn {
+      background: rgba(255, 23, 68, 0.25);
+      border: 1px solid #ff1744;
+      color: #ff8a80;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .admin-del-btn:hover {
+      background: #ff1744;
+      color: #fff;
     }
 
     .cheat-title {
@@ -1492,16 +1536,26 @@
       <button class="cheat-btn" id="cheatMaxBtn"><span>👑 Max Kit (+5)</span><span>ACT</span></button>
       <button class="cheat-btn" id="cheatNukeBtn"><span>💥 EMP Nuke</span><span>ACT</span></button>
       <button class="cheat-btn" id="cheatSwarmBtn"><span>🔥 +100 Swarm</span><span>ACT</span></button>
+      <button class="cheat-btn" id="cheatBossBtn"><span>👾 Spawn Boss</span><span>ACT</span></button>
+      <button class="cheat-btn" id="cheatScoreBtn"><span>💎 +50k Score</span><span>ACT</span></button>
     </div>
 
     <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.12);">
       <div style="font-family:'Orbitron',sans-serif;font-size:0.66rem;color:#ffea00;margin-bottom:5px;display:flex;justify-content:space-between;">
-        <span>🌐 CLOUDFLARE LEADERBOARD MODERATION</span>
+        <span>🌐 LEADERBOARD &amp; PLAYER MODERATION</span>
         <span id="adminApiStatus" style="color:#00f3ff;">READY</span>
       </div>
       <div class="cheat-input-group" style="margin-bottom:5px;">
         <input type="password" id="adminKeyInput" placeholder="WORKER ADMIN KEY (DEFAULT: OVERLORD)" value="OVERLORD" />
-        <button id="adminPurgeBtn" style="background:#ff1744;color:#fff;">PURGE</button>
+        <button id="adminPurgeBtn" style="background:#ff1744;color:#fff;" title="Reset all scores to defaults">RESET ALL</button>
+      </div>
+      <div class="admin-player-list" id="adminPlayerList">
+        <div style="color:#90a4ae;font-size:0.68rem;text-align:center;">Loading players...</div>
+      </div>
+      <div class="cheat-input-group" style="margin-bottom:2px;">
+        <input type="text" id="adminInjectName" placeholder="CALLSIGN" style="width:95px;background:rgba(0,0,0,0.5);border:1px solid rgba(0,243,255,0.35);color:#fff;font-family:'Orbitron',sans-serif;font-size:0.66rem;padding:4px 6px;border-radius:5px;text-transform:uppercase;" />
+        <input type="number" id="adminInjectScore" placeholder="SCORE" style="flex:1;background:rgba(0,0,0,0.5);border:1px solid rgba(0,243,255,0.35);color:#00e676;font-family:'Orbitron',sans-serif;font-size:0.66rem;padding:4px 6px;border-radius:5px;" />
+        <button id="adminInjectBtn" style="background:#00e676;color:#05050a;border:none;border-radius:5px;padding:4px 8px;font-family:'Orbitron',sans-serif;font-size:0.65rem;font-weight:700;cursor:pointer;">+ADD</button>
       </div>
     </div>
 
@@ -1623,7 +1677,7 @@
               <span style="font-size:0.75rem;color:#b0bec5;font-weight:700;">CALLSIGN:</span>
               <input type="text" id="pilotCallsignInput" class="callsign-input" maxlength="14" placeholder="CYBER-FOX" value="CYBER-FOX" />
               <label style="display:flex;align-items:center;gap:5px;font-size:0.74rem;color:#00f3ff;cursor:pointer;font-weight:700;">
-                <input type="checkbox" id="ghostToggleCheck" checked style="accent-color:#00f3ff;cursor:pointer;" />
+                <input type="checkbox" id="ghostToggleCheck" style="accent-color:#00f3ff;cursor:pointer;" />
                 👻 LIVE GHOST PILOTS
               </label>
             </div>
@@ -1639,7 +1693,10 @@
       </div>
     </div>
 
-    <button class="btn-neon" id="startBtn">LAUNCH SIMULATION</button>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="btn-neon" id="startBtn">LAUNCH SIMULATION</button>
+      <button id="startAdminUnlockBtn" title="Admin Access" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,128,171,0.3);color:#ff80ab;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;padding:10px 14px;border-radius:99px;cursor:pointer;">🔒 ADMIN</button>
+    </div>
   </div>
 
   <!-- LEVEL UP MODAL -->
@@ -2656,21 +2713,33 @@
       showGtaToast('ADMIN ACCESS GRANTED', 'OVERLORD SANDBOX & MODERATION UNLOCKED');
     }
 
-    // Check URL (?admin=1) or session for Admin Access, or 5-click secret on game title
+    // Check URL (?admin=1) or session for Admin Access, or 5-click secret on game title / Start Admin button
     if (window.location.search.includes('admin=1') || sessionStorage.getItem('neon_admin_unlocked') === '1') {
-      setTimeout(() => unlockAdminPanel(false), 100);
+      setTimeout(() => unlockAdminPanel(true), 100);
     }
+
+    function promptForAdminAccess() {
+      if (cheats.adminUnlocked) {
+        document.getElementById('cheatDrawer').classList.remove('hidden');
+        return;
+      }
+      const pwd = prompt('👑 ENTER OVERLORD ADMIN PASSWORD (default: OVERLORD):');
+      if (pwd && (pwd.toUpperCase() === 'OVERLORD' || pwd === 'admin123')) {
+        document.getElementById('adminKeyInput').value = pwd;
+        unlockAdminPanel(true);
+      } else if (pwd !== null) {
+        showGtaToast('ACCESS DENIED', 'INVALID ADMIN CREDENTIALS', true);
+      }
+    }
+
+    document.getElementById('startAdminUnlockBtn').addEventListener('click', promptForAdminAccess);
 
     let titleClickCount = 0;
     document.getElementById('mainTitleText').addEventListener('click', () => {
       titleClickCount += 1;
       if (titleClickCount >= 5) {
         titleClickCount = 0;
-        const pwd = prompt('👑 ENTER OVERLORD ADMIN PASSWORD (default: OVERLORD):');
-        if (pwd && (pwd.toUpperCase() === 'OVERLORD' || pwd === 'admin123')) {
-          document.getElementById('adminKeyInput').value = pwd;
-          unlockAdminPanel(true);
-        }
+        promptForAdminAccess();
       }
     });
 
@@ -2815,6 +2884,19 @@
     document.getElementById('cheatMaxBtn').addEventListener('click', () => applyMaxKitBoost(5));
     document.getElementById('cheatNukeBtn').addEventListener('click', () => triggerNova(true));
     document.getElementById('cheatSwarmBtn').addEventListener('click', () => spawnStressSwarm(100));
+    document.getElementById('cheatBossBtn').addEventListener('click', () => {
+      spawnEnemy('boss');
+      showGtaToast('ADMIN SPAWNER', 'DREADNOUGHT BOSS INJECTED!', true);
+    });
+    document.getElementById('cheatScoreBtn').addEventListener('click', () => {
+      score += 50000;
+      if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem('pawtocol_best', bestScore);
+      }
+      showGtaToast('ADMIN OVERRIDE', '+50,000 COMBAT SCORE ADDED');
+      updateHUD();
+    });
 
     // Hardware & Telemetry Sidebar Buttons (mutually exclusive on mobile so they never overlap)
     document.getElementById('hwToggle').addEventListener('click', () => {
@@ -3430,7 +3512,118 @@
           </div>
         `;
       }).join('');
+
+      renderAdminPlayerList();
     }
+
+    function renderAdminPlayerList() {
+      const adminListEl = document.getElementById('adminPlayerList');
+      if (!adminListEl) return;
+
+      if (!leaderboardData || leaderboardData.length === 0) {
+        adminListEl.innerHTML = '<div style="color:#90a4ae;font-size:0.68rem;text-align:center;">No players on leaderboard</div>';
+        return;
+      }
+
+      adminListEl.innerHTML = leaderboardData.map((row, idx) => `
+        <div class="admin-player-row">
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px;">
+            <strong>#${idx + 1} ${row.callsign || 'PILOT'}</strong> (${(row.score || 0).toLocaleString()})
+          </span>
+          <button class="admin-del-btn" data-callsign="${row.callsign || ''}" data-ts="${row.ts || 0}">✖ DEL</button>
+        </div>
+      `).join('');
+
+      adminListEl.querySelectorAll('.admin-del-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          removePlayerFromLeaderboard(btn.dataset.callsign, Number(btn.dataset.ts));
+        });
+      });
+    }
+
+    async function removePlayerFromLeaderboard(callsign, ts) {
+      const adminKey = document.getElementById('adminKeyInput').value || 'OVERLORD';
+      const statusEl = document.getElementById('adminApiStatus');
+      statusEl.textContent = 'REMOVING...';
+
+      // Remove from local list first
+      leaderboardData = leaderboardData.filter((r) => !(r.callsign === callsign && (ts ? r.ts === ts : true)));
+      saveLocalLeaderboard(leaderboardData);
+      renderLeaderboardUI();
+
+      try {
+        const res = await fetch('/api/admin/delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': adminKey
+          },
+          body: JSON.stringify({ callsign, ts })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.entries)) {
+            leaderboardData = data.entries;
+            saveLocalLeaderboard(leaderboardData);
+            renderLeaderboardUI();
+          }
+          statusEl.textContent = 'PLAYER REMOVED';
+          showGtaToast('ADMIN MODERATION', `REMOVED PILOT: ${callsign}`);
+          return;
+        } else {
+          statusEl.textContent = 'INVALID KEY';
+          showGtaToast('ADMIN DENIED', 'INVALID WORKER ADMIN KEY', true);
+          return;
+        }
+      } catch (e) {
+        statusEl.textContent = 'REMOVED LOCALLY';
+        showGtaToast('ADMIN MODERATION', `REMOVED ${callsign} (LOCAL)`);
+      }
+    }
+
+    document.getElementById('adminInjectBtn').addEventListener('click', async () => {
+      const nameInp = document.getElementById('adminInjectName');
+      const scoreInp = document.getElementById('adminInjectScore');
+      const callsign = (nameInp.value || 'ADMIN-BOT').toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 14);
+      const customScore = Math.max(0, Number(scoreInp.value) || 99999);
+
+      const newEntry = {
+        callsign,
+        score: customScore,
+        benchScore: Math.round(customScore * 0.35),
+        wave: 15,
+        ship: config.ship,
+        theme: config.theme,
+        gpu: hwSpecs.gpu.slice(0, 36),
+        ghost: [],
+        ts: Date.now()
+      };
+
+      leaderboardData.push(newEntry);
+      leaderboardData.sort((a, b) => (b.score || 0) - (a.score || 0));
+      saveLocalLeaderboard(leaderboardData);
+      renderLeaderboardUI();
+
+      try {
+        const res = await fetch('/api/leaderboard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newEntry)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.entries)) {
+            leaderboardData = data.entries;
+            saveLocalLeaderboard(leaderboardData);
+            renderLeaderboardUI();
+          }
+        }
+      } catch (e) {}
+
+      nameInp.value = '';
+      scoreInp.value = '';
+      showGtaToast('ADMIN INJECTION', `ADDED ${callsign} (${customScore.toLocaleString()})`);
+    });
 
     document.getElementById('tabCombatBtn').addEventListener('click', () => {
       currentLbTab = 'COMBAT';
@@ -4444,10 +4637,13 @@
     document.getElementById('startBtn').addEventListener('click', () => {
       sfx.init();
       document.getElementById('startScreen').classList.add('hidden');
-      cheats.godMode = false;
-      cheats.hyperFire = false;
-      cheats.infDash = false;
-      cheats.beanMagnet = false;
+      document.getElementById('cheatDrawer').classList.add('hidden');
+      if (!cheats.adminUnlocked) {
+        cheats.godMode = false;
+        cheats.hyperFire = false;
+        cheats.infDash = false;
+        cheats.beanMagnet = false;
+      }
       resetGame();
       gameState = 'PLAYING';
     });
