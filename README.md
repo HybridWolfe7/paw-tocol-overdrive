@@ -37,18 +37,3 @@ A zero-dependency HTML5 Canvas 2D arcade survival game, live hardware stress-tes
 | **EMP Shockwave** | `Q`, `E`, or `Right Click` | `💥 EMP` Touch Button |
 | **Hardware Panel** | `H` | Tap `🖥️ HW BENCH` Top Pill |
 | **Telemetry Panel** | `Tab` | Tap `📊 TELEMETRY` Top Pill |
-
----
-
-## ☁️ Deploying to Cloudflare Workers
-
-This repository is pre-configured with [`index.html`](index.html), [`worker.js`](worker.js), and [`wrangler.jsonc`](wrangler.jsonc) so your Cloudflare Worker serves both the static game and the `/api/leaderboard` API endpoints.
-
-### Option A: Deploy via GitHub + Cloudflare Dashboard
-1. Open the **Cloudflare Dashboard** → **Workers & Pages** → **Create Application** → **Import a repository**.
-2. Select this GitHub repository and deploy.
-
-### Option B: Deploy via Wrangler CLI
-```bash
-npx wrangler@latest deploy
-```
