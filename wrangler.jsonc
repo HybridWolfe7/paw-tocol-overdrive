@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "neon-overdrive-arena",
+  "main": "worker.js",
+  "compatibility_date": "2025-02-01",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/admin"]
+  },
+  "vars": {
+    "ADMIN_KEY": "OVERLORD"
+  }
+}
+

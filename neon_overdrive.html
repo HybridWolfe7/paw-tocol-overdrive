@@ -706,6 +706,154 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
+    /* GTA-STYLE CHEAT ACTIVATED TOAST */
+    #gtaCheatToast {
+      position: fixed;
+      top: 90px;
+      left: 22px;
+      background: rgba(10, 8, 20, 0.92);
+      border-left: 5px solid #00e676;
+      border-top: 1px solid rgba(0, 230, 118, 0.4);
+      border-right: 1px solid rgba(0, 230, 118, 0.4);
+      border-bottom: 1px solid rgba(0, 230, 118, 0.4);
+      padding: 10px 18px;
+      border-radius: 6px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 230, 118, 0.3);
+      font-family: 'Orbitron', sans-serif;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #gtaCheatToast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .gta-toast-header {
+      font-size: 0.65rem;
+      color: #00e676;
+      letter-spacing: 2px;
+      margin-bottom: 2px;
+    }
+
+    .gta-toast-body {
+      font-size: 0.9rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    /* LEADERBOARD TABLE & TABS */
+    .lb-box {
+      background: rgba(8, 6, 18, 0.72);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .lb-tabs {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lb-tab-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(0, 243, 255, 0.3);
+      color: #b0bec5;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .lb-tab-btn.active {
+      background: var(--primary);
+      color: #05050a;
+      border-color: var(--primary);
+    }
+
+    .lb-list {
+      max-height: 135px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.8rem;
+    }
+
+    .lb-row {
+      display: grid;
+      grid-template-columns: 28px 1.2fr 0.9fr 1fr 0.8fr;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px 8px;
+      border-radius: 5px;
+      gap: 6px;
+    }
+
+    .lb-rank {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      color: #ffea00;
+      font-size: 0.75rem;
+    }
+
+    .lb-callsign {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.75rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lb-gpu {
+      color: #90a4ae;
+      font-size: 0.68rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lb-score {
+      font-family: 'Orbitron', sans-serif;
+      color: #00e676;
+      font-weight: 700;
+      text-align: right;
+      font-size: 0.76rem;
+    }
+
+    .callsign-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .callsign-input {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid var(--primary);
+      color: #00f3ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      outline: none;
+      width: 190px;
+      text-transform: uppercase;
+    }
+
     .upgrade-card:hover {
       border-color: #ff4081;
       box-shadow: 0 0 24px rgba(255, 64, 129, 0.45);
@@ -1315,17 +1463,23 @@
     </div>
   </div>
 
-  <!-- CHEAT CODE & DEV CONSOLE DRAWER -->
-  <button id="cheatToggleBtn">⚡ CHEAT DECK [`]</button>
+  <!-- GTA-STYLE SECRET KEYBOARD CHEAT TOAST -->
+  <div id="gtaCheatToast">
+    <div class="gta-toast-header" id="gtaToastHeader">CHEAT ACTIVATED</div>
+    <div class="gta-toast-body" id="gtaToastText">GOD MODE ENABLED</div>
+  </div>
+
+  <!-- HIDDEN ADMIN & SANDBOX DECK (Invisible to Public until unlocked via Secret Code / Admin Password) -->
+  <button id="cheatToggleBtn" class="hidden">👑 ADMIN DECK [`]</button>
 
   <div id="cheatDrawer" class="hud-panel hidden">
     <div class="cheat-title">
-      <span>⚡ ANARCHY CHEAT DECK</span>
-      <span style="font-size:0.68rem;color:#00f3ff;">SANDBOX</span>
+      <span>👑 OVERLORD ADMIN &amp; SANDBOX</span>
+      <span style="font-size:0.68rem;color:#00e676;">AUTHORIZED</span>
     </div>
 
     <div class="cheat-input-group">
-      <input type="text" id="cheatCodeInput" placeholder="CODE (AWWOO, BENCH, BEANS)" />
+      <input type="text" id="cheatCodeInput" placeholder="EXEC CODE (AWWOO, BENCH, BEANS)" />
       <button id="cheatCodeBtn">RUN</button>
     </div>
 
@@ -1340,13 +1494,23 @@
       <button class="cheat-btn" id="cheatSwarmBtn"><span>🔥 +100 Swarm</span><span>ACT</span></button>
     </div>
 
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.12);">
+      <div style="font-family:'Orbitron',sans-serif;font-size:0.66rem;color:#ffea00;margin-bottom:5px;display:flex;justify-content:space-between;">
+        <span>🌐 CLOUDFLARE LEADERBOARD MODERATION</span>
+        <span id="adminApiStatus" style="color:#00f3ff;">READY</span>
+      </div>
+      <div class="cheat-input-group" style="margin-bottom:5px;">
+        <input type="password" id="adminKeyInput" placeholder="WORKER ADMIN KEY (DEFAULT: OVERLORD)" value="OVERLORD" />
+        <button id="adminPurgeBtn" style="background:#ff1744;color:#fff;">PURGE</button>
+      </div>
+    </div>
+
     <div class="cheat-hint">
-      Codes: <code>AWWOO</code> (God) • <code>ZOOMIES</code> (Dash) • <code>BEANS</code> (+5 Lvl) • <code>BOOP</code>
-      (Nuke) • <code>BENCH</code> (+100 Stress Swarm)
+      GTA Keyboard Codes (Type directly in-game): <code>AWWOO</code> • <code>HESOYAM</code> • <code>ZOOMIES</code> • <code>BEANS</code> • <code>BOOP</code> • <code>OWO</code> • <code>BENCH</code>
     </div>
   </div>
 
-  <!-- CONTROLS FOOTER -->
+  <!-- CONTROLS FOOTER (Clean public HUD — no cheat button shown) -->
   <div id="controlsHint">
     <span><span class="key-pill">WASD</span> MOVE</span>
     <span><span class="key-pill">CLICK / [F]</span> AUTO-FIRE</span>
@@ -1354,7 +1518,6 @@
     <span><span class="key-pill">Q / E</span> EMP (<span id="novaCountText">2</span>)</span>
     <span><span class="key-pill">H</span> HW BENCH</span>
     <span><span class="key-pill">TAB</span> TELEMETRY</span>
-    <span><span class="key-pill">`</span> CHEATS</span>
   </div>
 
   <!-- MOBILE DUAL-STICK TOUCH CONTROLS -->
@@ -1450,6 +1613,30 @@
           </div>
         </div>
       </div>
+
+      <!-- 4. ONLINE PILOT CALLSIGN, GHOST PILOTS & GLOBAL LEADERBOARD -->
+      <div>
+        <div class="config-section-title">4. Online Pilot Callsign, Ghost Pilots &amp; Global Ranking</div>
+        <div class="lb-box">
+          <div class="lb-tabs">
+            <div class="callsign-input-row" style="margin-bottom:0;">
+              <span style="font-size:0.75rem;color:#b0bec5;font-weight:700;">CALLSIGN:</span>
+              <input type="text" id="pilotCallsignInput" class="callsign-input" maxlength="14" placeholder="CYBER-FOX" value="CYBER-FOX" />
+              <label style="display:flex;align-items:center;gap:5px;font-size:0.74rem;color:#00f3ff;cursor:pointer;font-weight:700;">
+                <input type="checkbox" id="ghostToggleCheck" checked style="accent-color:#00f3ff;cursor:pointer;" />
+                👻 LIVE GHOST PILOTS
+              </label>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="lb-tab-btn active" id="tabCombatBtn">🏆 TOP COMBAT</button>
+              <button class="lb-tab-btn" id="tabBenchBtn">🔥 TOP GPU BENCHMARK</button>
+            </div>
+          </div>
+          <div class="lb-list" id="leaderboardList">
+            <div style="color:#90a4ae;font-size:0.75rem;text-align:center;padding:12px;">Syncing Global Edge Leaderboard...</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <button class="btn-neon" id="startBtn">LAUNCH SIMULATION</button>
@@ -1473,6 +1660,7 @@
       <div class="stat-row"><span>Peak DPS Recorded</span><strong id="finalPeakDps">0</strong></div>
       <div class="stat-row"><span>Peak Active Entities</span><strong id="finalPeakEntities">0</strong></div>
       <div class="stat-row"><span>Hardware Stress Score</span><strong id="finalBenchScore">0</strong></div>
+      <div class="stat-row"><span>Global Ranking Sync</span><strong id="finalSyncStatus" style="color:#00e676;">UPLOADING RUN &amp; GHOST...</strong></div>
     </div>
     <div style="display:flex;gap:14px;">
       <button class="btn-neon" id="restartBtn">QUICK RETRY</button>
@@ -2024,12 +2212,17 @@
       godMode: false,
       infDash: false,
       hyperFire: false,
-      beanMagnet: false
+      beanMagnet: false,
+      adminUnlocked: false
     };
 
     window.addEventListener('keydown', (e) => {
-      if (document.activeElement === document.getElementById('cheatCodeInput')) {
-        if (e.key === 'Enter') {
+      if (
+        document.activeElement === document.getElementById('cheatCodeInput') ||
+        document.activeElement === document.getElementById('pilotCallsignInput') ||
+        document.activeElement === document.getElementById('adminKeyInput')
+      ) {
+        if (e.key === 'Enter' && document.activeElement === document.getElementById('cheatCodeInput')) {
           executeTextCheat(document.getElementById('cheatCodeInput').value);
           document.getElementById('cheatCodeInput').value = '';
         }
@@ -2040,11 +2233,11 @@
       keys[k] = true;
 
       if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
-        keyBuffer = (keyBuffer + e.key.toUpperCase()).slice(-12);
+        keyBuffer = (keyBuffer + e.key.toUpperCase()).slice(-16);
         checkSecretBuffer();
       }
 
-      if (e.key === '`' || e.key === '~') {
+      if ((e.key === '`' || e.key === '~') && cheats.adminUnlocked) {
         e.preventDefault();
         toggleCheatDrawer();
       }
@@ -2400,6 +2593,7 @@
 
       rebuildOrbitals();
       resetTelemetry();
+      initGhostPilotsForRun();
       applyThemeUI();
       updateCheatUI();
       spawnWave(1);
@@ -2428,9 +2622,60 @@
     }
 
     // =========================================================================
-    // CHEAT & BENCHMARK UI LISTENERS
+    // GTA-STYLE HIDDEN KEYBOARD CHEATS & PASSWORD-PROTECTED ADMIN DECK
     // =========================================================================
+    let gtaToastTimeout = null;
+
+    function showGtaToast(headerText, bodyText, isWarning = false) {
+      const toast = document.getElementById('gtaCheatToast');
+      const hdr = document.getElementById('gtaToastHeader');
+      const bdy = document.getElementById('gtaToastText');
+      if (!toast) return;
+
+      hdr.textContent = headerText;
+      bdy.textContent = bodyText;
+      toast.style.borderLeftColor = isWarning ? '#ff4081' : '#00e676';
+      hdr.style.color = isWarning ? '#ff4081' : '#00e676';
+
+      toast.classList.add('show');
+      if (gtaToastTimeout) clearTimeout(gtaToastTimeout);
+      gtaToastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3100);
+    }
+
+    function unlockAdminPanel(openDrawer = true) {
+      cheats.adminUnlocked = true;
+      sessionStorage.setItem('neon_admin_unlocked', '1');
+      document.getElementById('cheatToggleBtn').classList.remove('hidden');
+      if (openDrawer) {
+        document.getElementById('cheatDrawer').classList.remove('hidden');
+      }
+      sfx.init();
+      sfx.playPowerup();
+      showGtaToast('ADMIN ACCESS GRANTED', 'OVERLORD SANDBOX & MODERATION UNLOCKED');
+    }
+
+    // Check URL (?admin=1) or session for Admin Access, or 5-click secret on game title
+    if (window.location.search.includes('admin=1') || sessionStorage.getItem('neon_admin_unlocked') === '1') {
+      setTimeout(() => unlockAdminPanel(false), 100);
+    }
+
+    let titleClickCount = 0;
+    document.getElementById('mainTitleText').addEventListener('click', () => {
+      titleClickCount += 1;
+      if (titleClickCount >= 5) {
+        titleClickCount = 0;
+        const pwd = prompt('👑 ENTER OVERLORD ADMIN PASSWORD (default: OVERLORD):');
+        if (pwd && (pwd.toUpperCase() === 'OVERLORD' || pwd === 'admin123')) {
+          document.getElementById('adminKeyInput').value = pwd;
+          unlockAdminPanel(true);
+        }
+      }
+    });
+
     function toggleCheatDrawer() {
+      if (!cheats.adminUnlocked) return;
       document.getElementById('cheatDrawer').classList.toggle('hidden');
     }
 
@@ -2459,7 +2704,20 @@
     }
 
     function checkSecretBuffer() {
-      const codes = ['AWWOO', 'ZOOMIES', 'BEANS', 'BOOP', 'FLOOF', 'OWO', 'UWU', 'BENCH'];
+      const codes = [
+        'ADMINOVERLORD',
+        'AWWOO',
+        'HESOYAM',
+        'BAGUVIX',
+        'ZOOMIES',
+        'BEANS',
+        'BOOP',
+        'HADOUKEN',
+        'FLOOF',
+        'OWO',
+        'UWU',
+        'BENCH'
+      ];
       for (const code of codes) {
         if (keyBuffer.endsWith(code)) {
           executeTextCheat(code);
@@ -2471,30 +2729,45 @@
 
     function executeTextCheat(rawCode) {
       const code = rawCode.trim().toUpperCase();
-      if (!code || !player) return;
+      if (!code) return;
+
+      if (code === 'ADMINOVERLORD' || code === 'OVERLORD') {
+        unlockAdminPanel(true);
+        return;
+      }
+
+      if (!player) return;
       sfx.init();
       sfx.playPowerup();
 
-      if (code === 'AWWOO' || code === 'GOD') {
+      if (code === 'AWWOO' || code === 'BAGUVIX' || code === 'GOD') {
         cheats.godMode = !cheats.godMode;
+        showGtaToast('CHEAT ACTIVATED', `GOD MODE: ${cheats.godMode ? 'ENABLED' : 'DISABLED'}`);
         spawnFloatingText(player.x, player.y - 40, `GOD MODE: ${cheats.godMode ? 'ON' : 'OFF'}`, '#ff80ab');
       } else if (code === 'ZOOMIES') {
         cheats.infDash = !cheats.infDash;
+        showGtaToast('CHEAT ACTIVATED', `INFINITE DASH: ${cheats.infDash ? 'ENABLED' : 'DISABLED'}`);
         spawnFloatingText(player.x, player.y - 40, `INF DASH: ${cheats.infDash ? 'ON' : 'OFF'}`, '#00f3ff');
-      } else if (code === 'BEANS') {
+      } else if (code === 'BEANS' || code === 'HESOYAM') {
+        showGtaToast('CHEAT ACTIVATED', 'MAX HEALTH, ARMOR & +5 LEVEL KIT');
         applyMaxKitBoost(5);
-      } else if (code === 'BOOP') {
+      } else if (code === 'BOOP' || code === 'HADOUKEN') {
+        showGtaToast('CHEAT ACTIVATED', 'ORBITAL EMP SHOCKWAVE DEPLOYED');
         triggerNova(true);
       } else if (code === 'FLOOF') {
         player.orbitalCount += 4;
         rebuildOrbitals();
+        showGtaToast('CHEAT ACTIVATED', '+4 ORBITAL PLASMA SENTINELS');
         spawnFloatingText(player.x, player.y - 40, '+4 ORBITAL SENTINELS!', '#00e676');
       } else if (code === 'OWO' || code === 'UWU') {
         cheats.hyperFire = !cheats.hyperFire;
+        showGtaToast('CHEAT ACTIVATED', `HYPER GATLING: ${cheats.hyperFire ? 'ENABLED' : 'DISABLED'}`);
         spawnFloatingText(player.x, player.y - 40, `HYPER GATLING: ${cheats.hyperFire ? 'ON' : 'OFF'}`, '#ffea00');
       } else if (code === 'BENCH') {
+        showGtaToast('BENCHMARK INJECTION', '+100 HOSTILE STRESS SWARM SPAWNED', true);
         spawnStressSwarm(100);
       } else {
+        showGtaToast('SYNTAX ERROR', `UNKNOWN CODE: ${code}`, true);
         spawnFloatingText(player.x, player.y - 40, `UNKNOWN CODE: ${code}`, '#ff1744');
       }
       updateCheatUI();
@@ -3031,6 +3304,311 @@
       document.getElementById('finalPeakEntities').textContent = hwMonitor.peakEntities.toLocaleString();
       document.getElementById('finalBenchScore').textContent = hwMonitor.stressScore.toLocaleString();
       document.getElementById('gameOverScreen').classList.remove('hidden');
+      submitRunToLeaderboard();
+    }
+
+    // =========================================================================
+    // GLOBAL LEADERBOARD API & LIVE HOLOGRAPHIC GHOST PILOTS
+    // =========================================================================
+    const SEEDED_LEADERBOARD = [
+      {
+        callsign: 'KITSUNE-VIX',
+        score: 84250,
+        benchScore: 18420,
+        wave: 11,
+        ship: 'PHANTOM',
+        theme: 'FURRY',
+        gpu: 'NVIDIA GeForce RTX 4080',
+        ghost: [[0.5, 0.5, 0], [0.64, 0.36, -0.5], [0.74, 0.52, 0.9], [0.58, 0.72, 2.3], [0.34, 0.68, 3.0], [0.26, 0.42, -1.1], [0.44, 0.28, -0.2]]
+      },
+      {
+        callsign: 'VANGUARD-01',
+        score: 62900,
+        benchScore: 24600,
+        wave: 9,
+        ship: 'TITAN',
+        theme: 'NORMIE',
+        gpu: 'AMD Radeon RX 7900 XTX',
+        ghost: [[0.5, 0.5, 1.5], [0.35, 0.35, -2.1], [0.25, 0.6, 1.8], [0.48, 0.78, 0.4], [0.72, 0.62, -0.8], [0.68, 0.32, -2.4]]
+      },
+      {
+        callsign: 'NEON-PAWS',
+        score: 48100,
+        benchScore: 14900,
+        wave: 8,
+        ship: 'SWARM',
+        theme: 'FURRY',
+        gpu: 'Apple M3 Max GPU',
+        ghost: [[0.5, 0.5, 0.2], [0.55, 0.28, -1.4], [0.3, 0.4, 2.6], [0.42, 0.72, 1.1], [0.7, 0.5, -0.3]]
+      },
+      {
+        callsign: 'CYBER-WOLF',
+        score: 35400,
+        benchScore: 11200,
+        wave: 6,
+        ship: 'STRIKER',
+        theme: 'FURRY',
+        gpu: 'NVIDIA GeForce RTX 3060',
+        ghost: []
+      }
+    ];
+
+    let leaderboardData = [...SEEDED_LEADERBOARD];
+    let currentLbTab = 'COMBAT'; // 'COMBAT' or 'BENCH'
+    let currentGhostRecording = [];
+    let ghostSampleTimer = 0;
+    let activeGhostPilots = [];
+
+    // Restore saved pilot callsign
+    const savedCallsign = localStorage.getItem('neon_callsign');
+    if (savedCallsign) {
+      document.getElementById('pilotCallsignInput').value = savedCallsign;
+    }
+    document.getElementById('pilotCallsignInput').addEventListener('input', (e) => {
+      const val = e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 14);
+      e.target.value = val;
+      localStorage.setItem('neon_callsign', val || 'CYBER-FOX');
+    });
+
+    function getLocalLeaderboard() {
+      try {
+        const raw = localStorage.getItem('neon_local_lb');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return [...SEEDED_LEADERBOARD];
+    }
+
+    function saveLocalLeaderboard(list) {
+      try {
+        localStorage.setItem('neon_local_lb', JSON.stringify(list.slice(0, 25)));
+      } catch (e) {}
+    }
+
+    async function fetchGlobalLeaderboard() {
+      try {
+        const res = await fetch('/api/leaderboard', { method: 'GET', headers: { 'Accept': 'application/json' } });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.entries) && data.entries.length > 0) {
+            leaderboardData = data.entries;
+            saveLocalLeaderboard(leaderboardData);
+            renderLeaderboardUI();
+            return;
+          }
+        }
+      } catch (e) {
+        // Offline / Local Go Live fallback
+      }
+      leaderboardData = getLocalLeaderboard();
+      renderLeaderboardUI();
+    }
+
+    function renderLeaderboardUI() {
+      const listEl = document.getElementById('leaderboardList');
+      if (!listEl) return;
+
+      const sorted = [...leaderboardData].sort((a, b) =>
+        currentLbTab === 'BENCH' ? (b.benchScore || 0) - (a.benchScore || 0) : (b.score || 0) - (a.score || 0)
+      );
+
+      listEl.innerHTML = sorted.slice(0, 10).map((row, idx) => {
+        const icon = row.theme === 'NORMIE' ? '🚀' : '🦊';
+        const val = currentLbTab === 'BENCH'
+          ? `${(row.benchScore || 0).toLocaleString()} PTS`
+          : `${(row.score || 0).toLocaleString()}`;
+        const hasGhost = Array.isArray(row.ghost) && row.ghost.length > 2 ? '👻' : '';
+        return `
+          <div class="lb-row">
+            <span class="lb-rank">#${idx + 1}</span>
+            <span class="lb-callsign">${icon} ${row.callsign || 'PILOT'} ${hasGhost}</span>
+            <span style="color:#00f3ff;font-size:0.7rem;font-weight:700;">W${row.wave || 1} • ${row.ship || 'STRIKER'}</span>
+            <span class="lb-gpu" title="${row.gpu || 'WebGL GPU'}">${row.gpu || 'WebGL GPU'}</span>
+            <span class="lb-score">${val}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('tabCombatBtn').addEventListener('click', () => {
+      currentLbTab = 'COMBAT';
+      document.getElementById('tabCombatBtn').classList.add('active');
+      document.getElementById('tabBenchBtn').classList.remove('active');
+      renderLeaderboardUI();
+    });
+
+    document.getElementById('tabBenchBtn').addEventListener('click', () => {
+      currentLbTab = 'BENCH';
+      document.getElementById('tabBenchBtn').classList.add('active');
+      document.getElementById('tabCombatBtn').classList.remove('active');
+      renderLeaderboardUI();
+    });
+
+    async function submitRunToLeaderboard() {
+      const statusEl = document.getElementById('finalSyncStatus');
+      const anyCheatUsed = cheats.godMode && config.difficulty !== 'BENCHMARK';
+      if (anyCheatUsed) {
+        statusEl.textContent = 'SANDBOX CHEATS ACTIVE (UNRANKED)';
+        statusEl.style.color = '#ffea00';
+        return;
+      }
+
+      const callsign = (document.getElementById('pilotCallsignInput').value || 'CYBER-FOX').toUpperCase();
+      const entry = {
+        callsign,
+        score: Math.round(score),
+        benchScore: Math.round(hwMonitor.stressScore),
+        wave,
+        ship: config.ship,
+        theme: config.theme,
+        gpu: hwSpecs.gpu.slice(0, 36),
+        ghost: currentGhostRecording.slice(0, 90),
+        ts: Date.now()
+      };
+
+      // Update local fallback first
+      const localList = getLocalLeaderboard();
+      localList.push(entry);
+      localList.sort((a, b) => b.score - a.score);
+      leaderboardData = localList.slice(0, 20);
+      saveLocalLeaderboard(leaderboardData);
+      renderLeaderboardUI();
+
+      try {
+        const res = await fetch('/api/leaderboard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entry)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.entries)) {
+            leaderboardData = data.entries;
+            saveLocalLeaderboard(leaderboardData);
+            renderLeaderboardUI();
+          }
+          statusEl.textContent = '🌐 SYNCED TO GLOBAL CLOUDFLARE EDGE!';
+          statusEl.style.color = '#00e676';
+          return;
+        }
+      } catch (e) {}
+
+      statusEl.textContent = '💾 SAVED TO LOCAL LEADERBOARD & GHOST CACHE';
+      statusEl.style.color = '#00f3ff';
+    }
+
+    // Admin Moderation Button: Purge Leaderboard on Cloudflare Worker + Local
+    document.getElementById('adminPurgeBtn').addEventListener('click', async () => {
+      const adminKey = document.getElementById('adminKeyInput').value || 'OVERLORD';
+      const statusEl = document.getElementById('adminApiStatus');
+      statusEl.textContent = 'PURGING...';
+      try {
+        const res = await fetch('/api/admin/clear', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': adminKey
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          leaderboardData = data.entries || [...SEEDED_LEADERBOARD];
+          saveLocalLeaderboard(leaderboardData);
+          renderLeaderboardUI();
+          statusEl.textContent = 'EDGE PURGED!';
+          showGtaToast('ADMIN MODERATION', 'GLOBAL LEADERBOARD RESET TO DEFAULTS');
+          return;
+        } else {
+          statusEl.textContent = 'INVALID KEY';
+          showGtaToast('ADMIN DENIED', 'INVALID WORKER ADMIN KEY', true);
+          return;
+        }
+      } catch (e) {
+        // Offline local reset
+        localStorage.removeItem('neon_local_lb');
+        leaderboardData = [...SEEDED_LEADERBOARD];
+        renderLeaderboardUI();
+        statusEl.textContent = 'LOCAL RESET';
+        showGtaToast('ADMIN MODERATION', 'LOCAL LEADERBOARD CACHE RESET');
+      }
+    });
+
+    function initGhostPilotsForRun() {
+      currentGhostRecording = [];
+      ghostSampleTimer = 0;
+      activeGhostPilots = [];
+
+      const ghostEnabled = document.getElementById('ghostToggleCheck')?.checked;
+      if (!ghostEnabled) return;
+
+      const withGhosts = leaderboardData.filter((r) => Array.isArray(r.ghost) && r.ghost.length >= 3);
+      withGhosts.slice(0, 2).forEach((r, idx) => {
+        activeGhostPilots.push({
+          callsign: r.callsign || `GHOST-${idx + 1}`,
+          theme: r.theme || 'FURRY',
+          path: r.ghost,
+          cursor: 0,
+          x: r.ghost[0][0] * width,
+          y: r.ghost[0][1] * height,
+          angle: r.ghost[0][2] || 0
+        });
+      });
+    }
+
+    function updateGhostPilots(dt) {
+      // Record current player's normalized trajectory every 0.35s
+      ghostSampleTimer += dt;
+      if (ghostSampleTimer >= 0.35 && currentGhostRecording.length < 95) {
+        ghostSampleTimer = 0;
+        currentGhostRecording.push([
+          +(player.x / Math.max(1, width)).toFixed(3),
+          +(player.y / Math.max(1, height)).toFixed(3),
+          +player.angle.toFixed(2)
+        ]);
+      }
+
+      // Advance active holographic ghost pilots along their recorded paths
+      activeGhostPilots.forEach((gp) => {
+        gp.cursor = (gp.cursor + dt * 2.2) % gp.path.length;
+        const i0 = Math.floor(gp.cursor);
+        const i1 = (i0 + 1) % gp.path.length;
+        const frac = gp.cursor - i0;
+        const p0 = gp.path[i0];
+        const p1 = gp.path[i1];
+
+        gp.x = (p0[0] + (p1[0] - p0[0]) * frac) * width;
+        gp.y = (p0[1] + (p1[1] - p0[1]) * frac) * height;
+        gp.angle = p0[2] + (p1[2] - p0[2]) * frac;
+      });
+    }
+
+    function drawGhostPilots() {
+      activeGhostPilots.forEach((gp) => {
+        ctx.save();
+        ctx.translate(gp.x, gp.y);
+        ctx.globalAlpha = 0.36;
+
+        ctx.save();
+        ctx.rotate(gp.angle);
+        ctx.strokeStyle = gp.theme === 'FURRY' ? '#ff80ab' : '#00f3ff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(19, 0);
+        ctx.lineTo(-11, -12);
+        ctx.lineTo(-6, 0);
+        ctx.lineTo(-11, 12);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.font = '700 10px Orbitron, sans-serif';
+        ctx.fillStyle = '#00f3ff';
+        ctx.textAlign = 'center';
+        ctx.fillText(`👻 ${gp.callsign}`, 0, -20);
+        ctx.restore();
+      });
     }
 
     function updateHUD() {
@@ -3119,6 +3697,7 @@
       }
 
       updateTelemetry(dt);
+      updateGhostPilots(dt);
 
       if (screenShake > 0) screenShake = Math.max(0, screenShake - dt * 35);
       if (gridPulse > 0) gridPulse = Math.max(0, gridPulse - dt * 2.5);
@@ -3773,6 +4352,9 @@
         ctx.restore();
       });
 
+      // Live Holographic Ghost Pilots (Top Leaderboard Replays)
+      drawGhostPilots();
+
       // Dash Hologram Afterimages
       afterimages.forEach((ai) => {
         ctx.save();
@@ -3886,6 +4468,7 @@
     // Boot
     detectHardwareSpecs();
     initMobileControls();
+    fetchGlobalLeaderboard();
     resetGame();
     gameState = 'START';
     requestAnimationFrame(loop);

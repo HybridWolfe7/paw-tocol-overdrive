@@ -1,111 +1,80 @@
-# 🦊🚀 PAW-TOCOL: NEON OVERDRIVE
+# 🐾🚀 PAW-TOCOL // NEON OVERDRIVE
+**Cyber Arena Survival, Online Ghost Ranking & WebGL Hardware Stress Benchmark**
 
-> **Zero-Dependency HTML5 Cyber Arena Survival & Real-Time Hardware Stress Benchmark**  
-> Built as a self-contained single-file web application ready for instant deployment on **Cloudflare Workers**, **Cloudflare Pages**, or **GitHub Pages**.
-
----
-
-## ✨ Features
-
-### 🎨 Dual Visual Themes (Instant Live Toggle)
-* **🦊 Furry Mode (`PAW-TOCOL`)**: Pilot *KITSUNE-09 // "VIX"* — an animated cyber-fox with twitching holo-ears, wagging plasma tail, glowing **Toe-Bean** XP gems, Paw-Blasters, and *Sonic Bark (`AWOOOOO!`)* EMP shockwaves.
-* **🚀 Normie Mode (`MILITARY CYBER`)**: Sleek geometric interceptor hulls with dynamic thruster exhaust, diamond data cores, plasma rail-bolts, and a tactical cyan/blue HUD.
-* Toggle between themes on the launch screen or **live mid-game** via the top-left HUD pill button.
-
-### 🛸 4 Playable Ship Classes
-| Class | Furry Callsign | Normie Callsign | Role & Starting Kit |
-| :--- | :--- | :--- | :--- |
-| **⚡ Striker** | `KITSUNE-09 // VIX` | `VANGUARD MK-IV` | Balanced interceptor (100 HP, fast fire rate, 1 Orbital Sentinel) |
-| **🗡️ Phantom** | `SWIFT-PAW // LYNX` | `SPECTRE STEALTH` | High-speed rail-runner (75 HP, +30% speed, +2 Pierce, short Dash CD) |
-| **🛡️ Juggernaut** | `URSINE-99 // KODIAK` | `AEGIS DREADNOUGHT` | Heavy armor tank (180 HP, Twin-Shot Split Barrel, +1 Bounce, 2 Orbitals) |
-| **🛰️ Architect** | `NINE-TAILS // KAMI` | `NEXUS CARRIER` | Orbital summoner (95 HP, 4 Orbiting Sentinels, wide XP magnet radius) |
-
-### 🖥️ Real-Time Hardware Profiler & Stress Benchmark (`[H]`)
-* **System Detection**: Automatically queries WebGL debug renderer info for unmasked **GPU model**, **CPU logical threads** (`navigator.hardwareConcurrency`), **System Memory**, and active **Canvas Resolution / DPI**.
-* **Live Frame Telemetry**: Tracks **Live FPS**, **1% Low FPS**, **Frame Time (`ms`)**, **Active Entity Count**, and renders a real-time **FPS Stability Sparkline**.
-* **🔥 Dedicated Hardware Stress Test Mode**: Automatically enables Invulnerability, Hyper-Gatling Multishot, Auto-Fire, and continuously injects hundreds of swarming enemies and particles to benchmark CPU/GPU performance.
-* **Live Glow FX Toggle**: Toggle Canvas `shadowBlur` dynamic bloom on/off mid-game to measure GPU lighting overhead.
-
-### 📊 Live Combat Telemetry Sidebar (`[TAB]`)
-* Real-time **Rolling DPS**, **Peak DPS**, **30-Second DPS Waveform Sparkline**, **Shot Accuracy %**, **Kills Per Minute (KPM)**, **Survival Timer**, and active weapon attribute inspector.
-
-### 📱 Mobile & Touch Optimized
-* **Twin-Stick Virtual Joysticks**: Left analog thumbstick for 360° movement, right thumbstick for aiming & firing (plus direct canvas tap-to-shoot).
-* **Dedicated Touch Action Buttons**: On-screen **⚡ DASH** and **💥 EMP** buttons.
-* **Responsive HUD Drawers**: Compact 4-column statistic tiles and mutually exclusive centered popover drawers on mobile screens.
+A zero-dependency HTML5 Canvas 2D arcade survival game, live hardware stress-tester, and Cloudflare Worker multiplayer ranking & ghost-replay experience.
 
 ---
 
-## 🎮 Controls & Secret Cheat Codes
+## ✨ Key Features
 
-### Desktop & Mobile Controls
-| Action | Desktop | Mobile / Touch |
+- **🌐 Global Leaderboard & Live Holographic Ghost Pilots**:
+  - Compete on two global leaderboards: **🏆 Top Combat Score** and **🔥 Top GPU Hardware Stress Benchmark**.
+  - **👻 Live Ghost Pilots**: Your flight path is recorded during each run; top players' holographic ghost ships fly alongside you in real time in the arena!
+  - Works seamlessly online via **Cloudflare Workers** (`/api/leaderboard`) and automatically falls back to `localStorage` when played offline or via VS Code Go Live.
+- **🎭 Dual Visual Theme Engine (Instant Toggle)**:
+  - **🦊 Furry Mode (`PAW-TOCOL`)**: Cyber-Kitsune avatar with animated twitching holo-ears, wagging plasma tail, Toe-Bean XP gems, and Paw-Blasters.
+  - **🚀 Normie Mode (`MILITARY CYBER`)**: Tactical delta-wing / stealth / juggernaut fighters, diamond data cores, and military cyber HUD.
+- **🛸 4 Playable Ship Classes**:
+  - **Striker**: Balanced interceptor with 1 orbital drone.
+  - **Phantom**: High-speed stealth fighter with built-in Railgun Pierce.
+  - **Juggernaut (`TITAN`)**: Heavy twin-hull dreadnought with split-barrel cannons and 2 orbitals.
+  - **Architect (`SWARM`)**: Carrier chassis starting with 4 orbiting plasma sentinels and wide XP vacuum.
+- **🔥 Hardware Profiler & GPU Stress Benchmark Mode**:
+  - Auto-detects unmasked **WebGL GPU Renderer**, **CPU Logical Threads**, **System RAM**, and **Display Viewport**.
+  - Tracks live **FPS**, **1% Low FPS**, **Frame Time (`ms`)**, **Active Entity Count**, and a composite **Hardware Stress Score**.
+- **📱 Responsive Mobile Twin-Stick Touch Controls**:
+  - Auto-detects mobile/touch devices (`<= 900px`) and enables virtual dual-stick joysticks (**MOVE** + **AIM & FIRE**), dedicated **DASH** and **EMP** buttons, and compact 4-column telemetry popovers.
+
+---
+
+## 🎮 Controls
+
+| Input | Desktop (Keyboard & Mouse) | Mobile / Touch |
 | :--- | :--- | :--- |
-| **Move** | `WASD` or `Arrow Keys` | Left Virtual Thumbstick |
-| **Aim & Fire** | `Mouse` + `Left Click` (`[F]` Auto-Fire) | Right Virtual Thumbstick / Tap Arena |
-| **Phase Dash** | `Spacebar` or `Shift` | **⚡ DASH** Button |
-| **EMP Shockwave** | `Q`, `E`, or `Right Click` | **💥 EMP** Button |
-| **Hardware Profiler** | `H` | Tap **🖥️ HARDWARE** Header Pill |
-| **Combat Telemetry** | `TAB` | Tap **📊 TELEMETRY** Header Pill |
-| **Cheat Terminal** | `` ` `` (Backtick) | Tap **⚡ CHEAT DECK** Pill |
-| **Pause** | `ESC` or `P` | — |
-
-### ⚡ Secret Keyboard & Terminal Cheat Codes
-Type these directly on your keyboard during gameplay or enter them into the **Anarchy Cheat Deck**:
-* `AWWOO` or `GOD` — Toggle **God Mode** (Invulnerability + infinite EMP charges)
-* `ZOOMIES` — Toggle **Infinite Phase Dash** (Zero cooldown)
-* `OWO` or `UWU` — Toggle **Hyper Gatling** (4x weapon fire rate)
-* `BEANS` — **Max Kit Boost** (+5 Levels, +2 Projectiles, +2 Orbitals, +45% Damage, Full Heal)
-* `FLOOF` — **Orbital Swarm** (Instantly spawns +4 orbiting sentinels)
-* `BOOP` — **Free EMP Nuke** (Triggers a screen-wide shockwave blast)
-* `BENCH` — **Stress Swarm** (Immediately injects +100 enemies and 120 particles)
+| **Move** | `W` `A` `S` `D` or `Arrow Keys` | Left Virtual Joystick |
+| **Aim & Fire** | `Mouse Cursor` + `Left Click` (or `[F]` Auto-Fire) | Right Virtual Joystick / Tap Canvas |
+| **Phase Dash** | `Space` or `Shift` | `⚡ DASH` Touch Button |
+| **EMP Shockwave** | `Q`, `E`, or `Right Click` | `💥 EMP` Touch Button |
+| **Hardware Panel** | `H` | Tap `🖥️ HW BENCH` Top Pill |
+| **Telemetry Panel** | `Tab` | Tap `📊 TELEMETRY` Top Pill |
 
 ---
 
-## ☁️ Deploying to Cloudflare Workers / Pages
+## 🕹️ GTA-Style Secret Keyboard Cheats (Public) & Hidden Admin Panel
 
-Because the entire game (HTML, CSS, Canvas 2D engine, and Web Audio synthesizer) is packed into a single file (`neon_overdrive.html`), you have two easy ways to host it on Cloudflare:
+The Sandbox Cheat Console is **completely hidden from the public UI** so normal players cannot see any cheat buttons or open a menu.
 
-### Option A: Cloudflare Workers with Static Assets (Recommended via GitHub)
-1. Rename or copy `neon_overdrive.html` to `index.html` (or keep both).
-2. Add a `wrangler.jsonc` (or `wrangler.toml`) in the project folder:
-   ```jsonc
-   {
-     "name": "neon-overdrive",
-     "compatibility_date": "2026-10-30",
-     "assets": {
-       "directory": "./"
-     }
-   }
-   ```
-3. Push this repository to **GitHub**.
-4. In your **Cloudflare Dashboard**, go to **Workers & Pages** -> **Create** -> **Connect to Git**, select your repository, and deploy!
+### 1. Public GTA-Style Secret Keyboard Codes
+Just like classic GTA, players can type secret codes **directly on their keyboard during gameplay** (no console needed!) to trigger a slide-in `"CHEAT ACTIVATED"` notification toast:
+- `AWWOO` or `BAGUVIX` — Toggle Invulnerable **God Mode**
+- `HESOYAM` or `BEANS` — Instant **Max HP, Armor & +5 Level Kit Boost**
+- `ZOOMIES` — Toggle **Infinite Zero-Cooldown Dash**
+- `BOOP` or `HADOUKEN` — Trigger a free **Screen-Clearing Orbital EMP Nuke**
+- `FLOOF` — Spawn **+4 Orbiting Plasma Sentinels**
+- `OWO` or `UWU` — Toggle **Hyper-Gatling Overclocked Fire Rate**
+- `BENCH` — Inject **+100 Hostile Swarm Entities** for instant FPS stress testing
 
-### Option B: Single-Script Cloudflare Worker (Embed HTML Directly)
-If you want to paste a Worker script directly into the Cloudflare Worker Quick Edit dashboard without static asset binding, you can serve the HTML string with a `Content-Type: text/html;charset=UTF-8` header:
+*(Note: Runs that use God Mode outside of Benchmark Mode are automatically marked as `UNRANKED` so the Global Leaderboard stays fair!)*
 
-```js
-import html from './neon_overdrive.html';
-
-export default {
-  async fetch(request) {
-    return new Response(html, {
-      headers: {
-        'content-type': 'text/html;charset=UTF-8',
-        'cache-control': 'public, max-age=3600'
-      }
-    });
-  }
-};
-```
+### 2. Unlocking the Hidden Overlord Admin & Moderation Panel (Owner Only)
+As the game owner/admin, you can unlock the hidden **👑 OVERLORD ADMIN & SANDBOX DECK** (which gives you 1-click sandbox buttons + Cloudflare Leaderboard Purge/Moderation controls) in three ways:
+1. **Type on Keyboard**: Type `ADMINOVERLORD` directly on your keyboard at any time.
+2. **URL Parameter**: Open the game with `?admin=1` (e.g., `https://your-worker.workers.dev/?admin=1`).
+3. **Mobile / Touch Secret Gesture**: Tap the main game title (`PAW-TOCOL: OVERDRIVE`) **5 times** on the Start Screen and enter the admin password (default: `OVERLORD`).
 
 ---
 
-## 📂 Project Structure
+## ☁️ Deploying to Cloudflare Workers (with API & Static Assets)
 
-```text
-GameCreation_sample/
-├── neon_overdrive.html   # Self-contained HTML5 game, telemetry UI & hardware benchmark
-└── README.md             # Project documentation & Cloudflare deployment guide
+This folder is pre-configured with [`worker.js`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/worker.js) and [`wrangler.jsonc`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/wrangler.jsonc) so your Cloudflare Worker serves both the game HTML and the `/api/leaderboard` + `/api/admin/clear` endpoints.
+
+### Option A: Deploy via GitHub + Cloudflare Dashboard (Recommended)
+1. Push [`index.html`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/index.html) (and [`neon_overdrive.html`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/neon_overdrive.html)), [`worker.js`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/worker.js), [`wrangler.jsonc`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/wrangler.jsonc), and [`README.md`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/README.md) to your GitHub repository.
+2. Open the **Cloudflare Dashboard** → **Workers & Pages** → **Create Application** → **Import a repository**.
+3. Select your GitHub repository and deploy!
+4. *(Optional)* To change your secret Admin Moderation password, go to your Worker's **Settings → Variables and Secrets** in Cloudflare and set `ADMIN_KEY` to your custom secret password.
+
+### Option B: Deploy via Wrangler CLI
+```bash
+npx wrangler@latest deploy
 ```
-
