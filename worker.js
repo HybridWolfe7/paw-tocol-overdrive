@@ -54,10 +54,16 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key'
 };
 
+function getKvStore(env) {
+  if (!env) return null;
+  return env['Leaderboard-Score'] || env.LEADERBOARD_KV || null;
+}
+
 async function loadEntries(env) {
-  if (env && env.LEADERBOARD_KV) {
+  const kv = getKvStore(env);
+  if (kv) {
     try {
-      const stored = await env.LEADERBOARD_KV.get('global_entries', 'json');
+      const stored = await kv.get('global_entries', 'json');
       if (Array.isArray(stored) && stored.length > 0) {
         return stored;
       }
@@ -68,9 +74,10 @@ async function loadEntries(env) {
 
 async function saveEntries(env, entries) {
   memoryLeaderboard = entries;
-  if (env && env.LEADERBOARD_KV) {
+  const kv = getKvStore(env);
+  if (kv) {
     try {
-      await env.LEADERBOARD_KV.put('global_entries', JSON.stringify(entries));
+      await kv.put('global_entries', JSON.stringify(entries));
     } catch (e) {}
   }
 }

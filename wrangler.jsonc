@@ -7,6 +7,12 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*", "/admin"]
   },
+  "kv_namespaces": [
+    {
+      "binding": "Leaderboard-Score",
+      "id": "9a2a861eb9574927872342c9ffd6ba33"
+    }
+  ],
   "vars": {
     "ADMIN_KEY": "OVERLORD"
   }
