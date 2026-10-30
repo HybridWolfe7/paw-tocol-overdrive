@@ -1857,6 +1857,21 @@
     </div>
   </div>
 
+  <!-- CINEMATIC FLOOR TRANSITION CUTSCENE OVERLAY -->
+  <div id="floorCutsceneScreen" class="overlay-screen hidden" style="z-index: 55; background: radial-gradient(circle at center, rgba(6, 12, 28, 0.92) 0%, rgba(2, 3, 8, 0.98) 100%);">
+    <div style="text-align:center;max-width:640px;padding:32px;border:1px solid var(--primary);border-radius:18px;background:rgba(8,14,28,0.9);box-shadow:0 0 60px rgba(0,243,255,0.35);">
+      <div style="font-family:'Orbitron',sans-serif;font-size:0.85rem;color:#ffea00;letter-spacing:3px;margin-bottom:8px;" id="cutsceneSubHeader">⚡ SECTOR BOSS ELIMINATED // HYPER-LIFT ENGAGED ⚡</div>
+      <h2 class="game-title" style="font-size:clamp(2rem, 4.5vw, 3rem);margin-bottom:10px;" id="cutsceneFloorTitle">ASCENDING TO FLOOR 2</h2>
+      <div style="font-family:'Orbitron',sans-serif;font-size:1.15rem;color:#00f3ff;letter-spacing:2px;margin-bottom:14px;font-weight:700;" id="cutsceneBiomeName">SECTOR 02 // CRYO-DATA VAULT</div>
+      <p style="color:#cfd8dc;font-size:0.95rem;line-height:1.5;margin-bottom:20px;" id="cutsceneDesc">
+        Hostile armor density, speed, and EMP Stun Artillery frequency have increased. Hull integrity partially restored for next sector.
+      </p>
+      <div style="width:100%;height:8px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden;">
+        <div id="cutsceneProgressBar" style="width:0%;height:100%;background:linear-gradient(90deg, #00f3ff, #00e676);transition:width 0.1s linear;"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- LEVEL UP MODAL -->
   <div id="upgradeScreen" class="overlay-screen hidden">
     <h2 class="game-title" style="font-size: 2.3rem;" id="upgradeModalTitle">SYSTEM EVOLUTION</h2>
@@ -2652,6 +2667,8 @@
     document.getElementById('bestScoreText').textContent = bestScore.toLocaleString();
 
     let wave = 1;
+    let floor = 1;      // 1 to 5 Floors max
+    let floorWave = 1;  // 1 to 20 Levels per Floor
     let waveTimer = 0;
     let benchSpawnTimer = 0;
     let enemiesKilled = 0;
@@ -2659,6 +2676,60 @@
     let comboTimer = 0;
     let screenShake = 0;
     let gridPulse = 0;
+
+    // 5-Floor Campaign Biome Themes (20 Levels per Floor = 100 Levels Total)
+    const FLOOR_THEMES = [
+      {
+        floor: 1,
+        title: 'FLOOR 01 // NEON GRID SECTOR',
+        sub: 'Standard Cyber-Defense Perimeter • Stun Drones Active at Lvl 3+ • Boss Airships at Lvl 10, 15, 20',
+        bg: 'rgba(6, 5, 14, 0.42)',
+        gridColor: '0, 229, 255',
+        furryGrid: '255, 105, 180',
+        accent: '#00f3ff',
+        mult: 1.0
+      },
+      {
+        floor: 2,
+        title: 'FLOOR 02 // CRYO-DATA VAULT',
+        sub: 'Sub-Zero Mainframe • High-Velocity EMP Stunners & Heavy Armored Squadrons',
+        bg: 'rgba(4, 14, 26, 0.44)',
+        gridColor: '41, 121, 255',
+        furryGrid: '0, 229, 255',
+        accent: '#2979ff',
+        mult: 1.35
+      },
+      {
+        floor: 3,
+        title: 'FLOOR 03 // SOLAR CORE FOUNDRY',
+        sub: 'Thermal Reactor Core • Aggressive Plasma Barrages & Multi-Turret Airships',
+        bg: 'rgba(24, 9, 4, 0.44)',
+        gridColor: '255, 145, 0',
+        furryGrid: '255, 171, 64',
+        accent: '#ff9100',
+        mult: 1.75
+      },
+      {
+        floor: 4,
+        title: 'FLOOR 04 // BIO-TOXIN NEXUS',
+        sub: 'Corrupted Neural Hive • Relentless Swarm Density & Rapid EMP Shockwaves',
+        bg: 'rgba(4, 20, 11, 0.44)',
+        gridColor: '0, 230, 118',
+        furryGrid: '105, 240, 174',
+        accent: '#00e676',
+        mult: 2.25
+      },
+      {
+        floor: 5,
+        title: 'FLOOR 05 // OVERLORD CITADEL',
+        sub: 'Final Command Sanctum • Maximum Threat Dreadnought Fleet & Apex Airships',
+        bg: 'rgba(24, 4, 16, 0.45)',
+        gridColor: '255, 23, 68',
+        furryGrid: '255, 64, 129',
+        accent: '#ff1744',
+        mult: 2.9
+      }
+    ];
 
     let player;
     let bullets = [];
@@ -2673,6 +2744,7 @@
     let afterimages = [];
     let introAnim = { active: false, timer: 0, duration: 1.2 };
     let deathAnim = { active: false, timer: 0, duration: 1.35 };
+    let cutsceneAnim = { active: false, timer: 0, duration: 3.1, nextFloor: 2 };
     let bannerTimeout = null;
 
     function showWaveBanner(text, isBoss = false) {
@@ -2788,6 +2860,8 @@
         dashCooldown: 0,
         dashCooldownMax: preset.dashCd,
         invulnTimer: 0,
+        stunTimer: 0,
+        stunImmunity: 0,
         novas: 2,
         earTwitch: 0
       };
@@ -2803,6 +2877,8 @@
       afterimages = [];
       introAnim = { active: true, timer: 0, duration: 1.15 };
       deathAnim = { active: false, timer: 0, duration: 1.35 };
+      cutsceneAnim = { active: false, timer: 0, duration: 3.1, nextFloor: 2 };
+      document.getElementById('floorCutsceneScreen')?.classList.add('hidden');
       player.invulnTimer = 1.4;
       gridPulse = 1.2;
       shockwaves.push({
@@ -2817,6 +2893,8 @@
 
       score = 0;
       wave = 1;
+      floor = 1;
+      floorWave = 1;
       waveTimer = 0;
       benchSpawnTimer = 0;
       enemiesKilled = 0;
@@ -3125,6 +3203,10 @@
     function triggerDash() {
       if (!cheats.infDash && player.dashCooldown > 0) return;
       sfx.playDash();
+      if (player.stunTimer > 0) {
+        player.stunTimer = 0;
+        spawnFloatingText(player.x, player.y - 32, '⚡ STUN BROKEN!', '#00e676');
+      }
       player.dashTimer = player.dashDuration;
       player.dashCooldown = cheats.infDash ? 0.05 : player.dashCooldownMax;
       player.invulnTimer = Math.max(player.invulnTimer, player.dashDuration + 0.14);
@@ -3226,71 +3308,95 @@
     }
 
     // =========================================================================
-    // ENEMY SPAWNING & AI
+    // ENEMY SPAWNING & AI (STUNNERS, MINI-BOSS AIRSHIPS & BIG BOSS AIRSHIPS)
     // =========================================================================
     let nextEnemyId = 1;
 
-    function spawnEnemy(type) {
-      const margin = 45;
-      let x, y;
-      if (Math.random() < 0.5) {
-        x = Math.random() < 0.5 ? -margin : width + margin;
-        y = Math.random() * height;
-      } else {
-        x = Math.random() * width;
-        y = Math.random() < 0.5 ? -margin : height + margin;
+    function spawnEnemy(type, customX = null, customY = null) {
+      const margin = 52;
+      let x = customX, y = customY;
+      if (x === null || y === null) {
+        if (Math.random() < 0.5) {
+          x = Math.random() < 0.5 ? -margin : width + margin;
+          y = Math.random() * height;
+        } else {
+          x = Math.random() * width;
+          y = Math.random() < 0.5 ? -margin : height + margin;
+        }
       }
 
       const diff = DIFFICULTY_SETTINGS[config.difficulty] || DIFFICULTY_SETTINGS.NORMAL;
-      const scale = (1 + (wave - 1) * 0.16) * diff.hpMult;
+      const floorTheme = FLOOR_THEMES[Math.min(FLOOR_THEMES.length - 1, Math.max(0, floor - 1))];
+      const scale = (1 + (floorWave - 1) * 0.14) * floorTheme.mult * diff.hpMult;
 
       const templates = {
         chaser: {
           radius: 14,
-          hp: 32 * scale,
-          speed: (155 + Math.min(90, wave * 6)) * diff.speedMult,
+          hp: 36 * scale,
+          speed: (165 + Math.min(100, wave * 5)) * diff.speedMult,
           color: '#ff1744',
           xp: 16,
-          score: 100,
+          score: 110,
           sides: 3
         },
         dasher: {
           radius: 13,
-          hp: 26 * scale,
-          speed: (225 + Math.min(110, wave * 8)) * diff.speedMult,
+          hp: 30 * scale,
+          speed: (235 + Math.min(120, wave * 7)) * diff.speedMult,
           color: '#ffea00',
           xp: 22,
-          score: 150,
+          score: 160,
           sides: 4
+        },
+        stunner: {
+          radius: 16,
+          hp: 46 * scale,
+          speed: (135 + Math.min(75, wave * 4)) * diff.speedMult,
+          color: '#00e5ff',
+          xp: 34,
+          score: 260,
+          sides: 4,
+          shootTimer: 1.25 + Math.random() * 0.8
         },
         shooter: {
           radius: 17,
-          hp: 48 * scale,
-          speed: (110 + Math.min(60, wave * 4)) * diff.speedMult,
+          hp: 54 * scale,
+          speed: (118 + Math.min(65, wave * 4)) * diff.speedMult,
           color: '#d500f9',
           xp: 30,
-          score: 220,
+          score: 230,
           sides: 5,
-          shootTimer: 1.5 + Math.random()
+          shootTimer: 1.3 + Math.random() * 0.7
         },
         tank: {
           radius: 26,
-          hp: 150 * scale,
-          speed: (78 + Math.min(40, wave * 3)) * diff.speedMult,
+          hp: 175 * scale,
+          speed: (84 + Math.min(45, wave * 3)) * diff.speedMult,
           color: '#ff6d00',
-          xp: 65,
-          score: 450,
+          xp: 70,
+          score: 480,
           sides: 6
         },
+        miniboss: {
+          radius: 32,
+          hp: 520 * scale,
+          speed: (96 + Math.min(35, floor * 6)) * diff.speedMult,
+          color: '#00e676',
+          xp: 190,
+          score: 1600,
+          sides: 6,
+          shootTimer: 1.15
+        },
         boss: {
-          radius: 42,
-          hp: 640 * scale,
-          speed: 94 * diff.speedMult,
+          radius: 50,
+          hp: 1450 * scale,
+          speed: (82 + Math.min(30, floor * 5)) * diff.speedMult,
           color: '#ff00e5',
-          xp: 240,
-          score: 2000,
+          xp: 480,
+          score: 4500,
           sides: 8,
-          shootTimer: 1.1
+          shootTimer: 1.0,
+          summonTimer: 6.5
         }
       };
 
@@ -3312,28 +3418,78 @@
         sides: t.sides,
         angle: 0,
         shootTimer: t.shootTimer || 0,
+        summonTimer: t.summonTimer || 0,
+        burstCount: 0,
         flashTimer: 0,
         spawnScale: 0.05
       });
     }
 
     function spawnWave(waveNum) {
+      floor = Math.min(5, Math.floor((waveNum - 1) / 20) + 1);
+      floorWave = ((waveNum - 1) % 20) + 1;
+
       const diff = DIFFICULTY_SETTINGS[config.difficulty] || DIFFICULTY_SETTINGS.NORMAL;
-      const baseCount = Math.round((6 + waveNum * 3) * diff.spawnMult);
+      const floorTheme = FLOOR_THEMES[Math.min(FLOOR_THEMES.length - 1, Math.max(0, floor - 1))];
+      const baseCount = Math.round((7 + floorWave * 2.4 + (floor - 1) * 5) * diff.spawnMult);
 
-      for (let i = 0; i < baseCount; i++) {
-        const r = Math.random();
-        if (waveNum >= 4 && r < 0.14) spawnEnemy('tank');
-        else if (waveNum >= 3 && r < 0.34) spawnEnemy('shooter');
-        else if (waveNum >= 2 && r < 0.58) spawnEnemy('dasher');
-        else spawnEnemy('chaser');
-      }
-
-      if (waveNum % 5 === 0) {
-        spawnEnemy('boss');
-        showWaveBanner(`⚠️ WAVE ${waveNum} // DREADNOUGHT BOSS ⚠️`, true);
+      // Levels 1 to 9 (and non-boss waves): Test / Upgrade Buildup with Stunners & Squadrons
+      if (floorWave === 10) {
+        // LEVEL 10: BIG BOSS AIRSHIP + Escort Swarm!
+        spawnEnemy('boss', width * 0.5, -60);
+        const escortCount = Math.max(6, Math.round(baseCount * 0.55));
+        for (let i = 0; i < escortCount; i++) {
+          const r = Math.random();
+          if (r < 0.28) spawnEnemy('stunner');
+          else if (r < 0.55) spawnEnemy('shooter');
+          else spawnEnemy('dasher');
+        }
+        showWaveBanner(`⚠️ FLOOR ${floor} - LVL 10 // BIG BOSS AIRSHIP ⚠️`, true);
+      } else if (floorWave === 15) {
+        // LEVEL 15: MULTIPLE MINI-BOSS AIRSHIP SQUADRON!
+        const miniCount = 2 + floor; // 3 on Floor 1 up to 7 on Floor 5
+        for (let m = 0; m < miniCount; m++) {
+          spawnEnemy('miniboss');
+        }
+        const escortCount = Math.max(8, Math.round(baseCount * 0.6));
+        for (let i = 0; i < escortCount; i++) {
+          if (i % 3 === 0) spawnEnemy('stunner');
+          else if (i % 2 === 0) spawnEnemy('dasher');
+          else spawnEnemy('chaser');
+        }
+        showWaveBanner(`⚠️ FLOOR ${floor} - LVL 15 // ${miniCount}x MINI-BOSS AIRSHIPS ⚠️`, true);
+      } else if (floorWave === 20) {
+        // LEVEL 20 (FLOOR FINALE): GIANT BIG BOSS AIRSHIP + MINION MINI-BOSS AIRSHIPS!
+        spawnEnemy('boss', width * 0.5, -65);
+        if (floor >= 4) {
+          // Floors 4 & 5 spawn twin Dreadnought Big Boss Airships on Level 20!
+          spawnEnemy('boss', width * 0.25, -65);
+        }
+        const minionMiniBosses = 2 + Math.floor(floor / 2); // 2 to 4 Mini-Boss Airship escorts
+        for (let m = 0; m < minionMiniBosses; m++) {
+          spawnEnemy('miniboss');
+        }
+        const escortCount = Math.max(8, Math.round(baseCount * 0.5));
+        for (let i = 0; i < escortCount; i++) {
+          if (i % 2 === 0) spawnEnemy('stunner');
+          else spawnEnemy('shooter');
+        }
+        showWaveBanner(`🚨 FLOOR ${floor} FINALE (LVL 20) // MOTHERSHIP & MINI-BOSS FLEET 🚨`, true);
       } else {
-        showWaveBanner(`WAVE ${waveNum} // ${diff.label}`, false);
+        // Standard & Upgrade Waves (Levels 1-9, 11-14, 16-19)
+        for (let i = 0; i < baseCount; i++) {
+          const r = Math.random();
+          if (floorWave >= 5 && r < 0.16) spawnEnemy('tank');
+          else if ((floorWave >= 3 || floor > 1) && r < 0.34) spawnEnemy('stunner');
+          else if (floorWave >= 2 && r < 0.54) spawnEnemy('shooter');
+          else if (r < 0.76) spawnEnemy('dasher');
+          else spawnEnemy('chaser');
+        }
+        // From Level 12+ onwards, occasionally drop a roving Mini-Boss Airship on normal waves too
+        if (floorWave >= 12 && floorWave % 4 === 0) {
+          spawnEnemy('miniboss');
+        }
+        showWaveBanner(`FLOOR ${floor} // LEVEL ${floorWave}/20 • ${floorTheme.title.split('//')[1].trim()}`, false);
       }
     }
 
@@ -3378,13 +3534,14 @@
       const idx = enemies.indexOf(e);
       if (idx !== -1) enemies.splice(idx, 1);
 
-      sfx.playExplosion(e.type === 'boss' ? 2.0 : e.type === 'tank' ? 1.3 : 0.8);
-      screenShake = Math.min(18, screenShake + (e.type === 'boss' ? 12 : 3));
+      const isAirship = e.type === 'boss' || e.type === 'miniboss';
+      sfx.playExplosion(e.type === 'boss' ? 2.2 : e.type === 'miniboss' ? 1.65 : e.type === 'tank' ? 1.3 : 0.8);
+      screenShake = Math.min(22, screenShake + (e.type === 'boss' ? 14 : e.type === 'miniboss' ? 8 : 3));
       gridPulse = 1;
 
       // Scale particle count slightly if thousands of particles are already active
-      const partCount = particles.length > 600 ? 6 : (e.type === 'boss' ? 38 : 14);
-      spawnParticles(e.x, e.y, e.color, partCount, 220);
+      const partCount = particles.length > 600 ? 6 : (e.type === 'boss' ? 42 : e.type === 'miniboss' ? 26 : 14);
+      spawnParticles(e.x, e.y, e.color, partCount, 240);
       spawnPolygonShatter(e.x, e.y, e.radius, e.sides, e.angle, e.color);
 
       if (shockwaves.length < 25) {
@@ -3392,10 +3549,10 @@
           x: e.x,
           y: e.y,
           radius: e.radius * 0.6,
-          maxRadius: e.radius * 2.6,
+          maxRadius: e.radius * (isAirship ? 3.2 : 2.6),
           color: e.color,
-          alpha: 0.7,
-          lineWidth: 2.5
+          alpha: 0.75,
+          lineWidth: isAirship ? 4 : 2.5
         });
       }
 
@@ -3421,18 +3578,18 @@
         vx: (Math.random() - 0.5) * 90,
         vy: (Math.random() - 0.5) * 90,
         val: e.xp,
-        radius: e.type === 'boss' ? 11 : 7,
-        color: e.type === 'boss' ? '#ff00e5' : '#00e676'
+        radius: e.type === 'boss' ? 12 : e.type === 'miniboss' ? 9.5 : 7,
+        color: e.type === 'boss' ? '#ff00e5' : e.type === 'miniboss' ? '#00f3ff' : '#00e676'
       });
 
-      if (e.type === 'boss' || (e.type === 'tank' && Math.random() < 0.35)) {
+      if (isAirship || (e.type === 'tank' && Math.random() < 0.35)) {
         xpGems.push({
           x: e.x + 12,
           y: e.y + 12,
           vx: (Math.random() - 0.5) * 60,
           vy: (Math.random() - 0.5) * 60,
           val: 0,
-          heal: 25,
+          heal: e.type === 'boss' ? 40 : 25,
           radius: 8,
           color: '#ff4081'
         });
@@ -3593,13 +3750,59 @@
     function showGameOverModal() {
       gameState = 'GAMEOVER';
       document.getElementById('finalScore').textContent = score.toLocaleString();
-      document.getElementById('finalWave').textContent = `WAVE ${wave} (${config.difficulty})`;
+      document.getElementById('finalWave').textContent = `FL ${floor}-${floorWave} (W${wave} • ${config.difficulty})`;
       document.getElementById('finalKills').textContent = enemiesKilled.toLocaleString();
       document.getElementById('finalPeakDps').textContent = telemetry.peakDps.toLocaleString();
       document.getElementById('finalPeakEntities').textContent = hwMonitor.peakEntities.toLocaleString();
       document.getElementById('finalBenchScore').textContent = hwMonitor.stressScore.toLocaleString();
       document.getElementById('gameOverScreen').classList.remove('hidden');
       submitRunToLeaderboard();
+    }
+
+    function triggerFloorCutscene(nextFloorNum) {
+      cutsceneAnim.active = true;
+      cutsceneAnim.timer = 0;
+      cutsceneAnim.duration = 3.1;
+      cutsceneAnim.nextFloor = nextFloorNum;
+
+      // Clear remaining stray bullets, heal 50% HP, and grant +1 EMP Nova charge
+      enemyBullets = [];
+      player.stunTimer = 0;
+      player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.5);
+      player.novas += 1;
+      sfx.playPowerup();
+
+      const theme = FLOOR_THEMES[Math.min(FLOOR_THEMES.length - 1, Math.max(0, nextFloorNum - 1))];
+      const screen = document.getElementById('floorCutsceneScreen');
+      const titleEl = document.getElementById('cutsceneFloorTitle');
+      const subEl = document.getElementById('cutsceneFloorSub');
+      const barEl = document.getElementById('cutsceneProgressBar');
+
+      if (titleEl) {
+        titleEl.textContent = theme.title;
+        titleEl.style.color = theme.accent;
+      }
+      if (subEl) {
+        subEl.textContent = `${theme.sub} // +50% SHIELD REPAIRED & +1 EMP CHARGE`;
+      }
+      if (barEl) {
+        barEl.style.width = '0%';
+      }
+      if (screen) {
+        screen.classList.remove('hidden');
+      }
+    }
+
+    function stunPlayer(duration = 1.15) {
+      if (cheats.godMode || player.invulnTimer > 0 || player.stunImmunity > 0) return;
+      player.stunTimer = duration;
+      player.stunImmunity = duration + 2.2;
+      screenShake = Math.max(screenShake, 12);
+      sfx.playHit();
+      spawnParticles(player.x, player.y, '#00e5ff', 20, 220);
+      spawnParticles(player.x, player.y, '#ffea00', 14, 180);
+      spawnFloatingText(player.x, player.y - 34, '⚡ EMP STUNNED! (SPACE TO BREAK)', '#00e5ff');
+      updateHUD();
     }
 
     // =========================================================================
@@ -4039,11 +4242,16 @@
         ? 'INFINITE'
         : player.dashCooldown <= 0 ? 'READY' : `${player.dashCooldown.toFixed(1)}s`;
 
-      document.getElementById('waveText').textContent = `WAVE ${wave}`;
-      document.getElementById('enemiesText').textContent = `HOSTILES: ${enemies.length} // ${config.difficulty}`;
+      document.getElementById('waveText').textContent = `FLOOR ${floor}/5 // LVL ${floorWave}/20`;
+      const activeAirships = enemies.filter(e => e.type === 'boss' || e.type === 'miniboss').length;
+      document.getElementById('enemiesText').textContent = activeAirships > 0
+        ? `HOSTILES: ${enemies.length} (⚠️ ${activeAirships} AIRSHIP) // ${config.difficulty}`
+        : `HOSTILES: ${enemies.length} // ${config.difficulty}`;
       document.getElementById('scoreText').textContent = score.toLocaleString();
       document.getElementById('bestScoreText').textContent = bestScore.toLocaleString();
-      document.getElementById('comboText').textContent = `${combo.toFixed(1)}x ${isFurry ? 'FUR-RENZY' : 'OVERDRIVE'}`;
+      document.getElementById('comboText').textContent = player.stunTimer > 0
+        ? `⚡ STUNNED (${player.stunTimer.toFixed(1)}s)`
+        : `${combo.toFixed(1)}x ${isFurry ? 'FUR-RENZY' : 'OVERDRIVE'}`;
       const novaStr = cheats.godMode ? '∞' : player.novas;
       document.getElementById('novaCountText').textContent = novaStr;
       const mobNovaEl = document.getElementById('mobNovaText');
@@ -4058,6 +4266,27 @@
     function update(dt) {
       updateHardwareMonitor(dt);
       if (gameState !== 'PLAYING') return;
+
+      // Floor Transition Cutscene Sequence (between Floor Finale Level 20 -> Next Floor Level 1)
+      if (cutsceneAnim.active) {
+        cutsceneAnim.timer += dt;
+        const pct = Math.min(100, (cutsceneAnim.timer / cutsceneAnim.duration) * 100);
+        const barEl = document.getElementById('cutsceneProgressBar');
+        if (barEl) barEl.style.width = `${pct}%`;
+
+        if (cutsceneAnim.timer >= cutsceneAnim.duration) {
+          cutsceneAnim.active = false;
+          document.getElementById('floorCutsceneScreen')?.classList.add('hidden');
+          wave += 1;
+          waveTimer = 0;
+          introAnim = { active: true, timer: 0, duration: 1.15 };
+          player.invulnTimer = 1.6;
+          gridPulse = 1.4;
+          spawnWave(wave);
+          updateHUD();
+        }
+        return;
+      }
 
       // Opening Warp-In Animation Timer
       if (introAnim.active) {
@@ -4108,6 +4337,8 @@
       if (screenShake > 0) screenShake = Math.max(0, screenShake - dt * 35);
       if (gridPulse > 0) gridPulse = Math.max(0, gridPulse - dt * 2.5);
       if (player.earTwitch > 0) player.earTwitch = Math.max(0, player.earTwitch - dt * 6);
+      if (player.stunTimer > 0) player.stunTimer = Math.max(0, player.stunTimer - dt);
+      if (player.stunImmunity > 0) player.stunImmunity = Math.max(0, player.stunImmunity - dt);
 
       if (comboTimer > 0) {
         comboTimer -= dt;
@@ -4124,7 +4355,25 @@
       }
 
       waveTimer += dt;
-      if (enemies.length === 0 || waveTimer > 20) {
+      const isBossWave = floorWave === 10 || floorWave === 15 || floorWave === 20;
+      const hasActiveAirship = enemies.some(e => e.type === 'boss' || e.type === 'miniboss');
+      const waveTimeoutLimit = isBossWave ? 42 : 19;
+
+      if (enemies.length === 0 || (!hasActiveAirship && waveTimer > waveTimeoutLimit)) {
+        if (floorWave === 20 && config.difficulty !== 'BENCHMARK') {
+          if (floor < 5) {
+            triggerFloorCutscene(floor + 1);
+            return;
+          } else if (wave === 100) {
+            // Floor 5 Level 20 Cleared! Campaign Victory Bonus!
+            score += 250000;
+            if (score > bestScore) {
+              bestScore = score;
+              localStorage.setItem('pawtocol_best', bestScore);
+            }
+            showGtaToast('🏆 5-FLOOR CAMPAIGN CLEARED!', '+250,000 VICTORY BONUS • ENDLESS OVERDRIVE ENGAGED', false);
+          }
+        }
         wave += 1;
         waveTimer = 0;
         spawnWave(wave);
@@ -4164,9 +4413,11 @@
           my /= len;
         }
 
+        // Stun Mechanic: 82% movement slow while EMP Stunned (unless player uses Dash!)
+        const stunMoveFactor = player.stunTimer > 0 ? 0.18 : 1.0;
         const accel = 14;
-        player.vx += (mx * player.speed - player.vx) * Math.min(1, accel * dt);
-        player.vy += (my * player.speed - player.vy) * Math.min(1, accel * dt);
+        player.vx += (mx * player.speed * stunMoveFactor - player.vx) * Math.min(1, accel * dt);
+        player.vy += (my * player.speed * stunMoveFactor - player.vy) * Math.min(1, accel * dt);
       }
 
       player.x += player.vx * dt;
@@ -4176,10 +4427,10 @@
       player.x = Math.max(pad, Math.min(width - pad, player.x));
       player.y = Math.max(pad, Math.min(height - pad, player.y));
 
-      // Shooting
+      // Shooting (Jammed while EMP Stunned!)
       player.fireTimer -= dt;
       const effectiveDelay = cheats.hyperFire ? player.fireDelay * 0.24 : player.fireDelay;
-      if ((mouse.down || mouse.autoFire || touchState.aimActive) && player.fireTimer <= 0) {
+      if (player.stunTimer <= 0 && (mouse.down || mouse.autoFire || touchState.aimActive) && player.fireTimer <= 0) {
         fireWeapon();
         player.fireTimer = effectiveDelay;
       }
@@ -4250,37 +4501,52 @@
         }
       }
 
-      // Enemy Bullets
+      // Enemy Bullets (including EMP Stun Bolts)
       for (let i = enemyBullets.length - 1; i >= 0; i--) {
         const eb = enemyBullets[i];
         eb.x += eb.vx * dt;
         eb.y += eb.vy * dt;
 
-        if (eb.x < -20 || eb.x > width + 20 || eb.y < -20 || eb.y > height + 20) {
+        if (eb.x < -30 || eb.x > width + 30 || eb.y < -30 || eb.y > height + 30) {
           enemyBullets.splice(i, 1);
           continue;
         }
 
         if (player.invulnTimer <= 0 && Math.hypot(eb.x - player.x, eb.y - player.y) < eb.radius + player.radius - 2) {
           enemyBullets.splice(i, 1);
-          damagePlayer(14);
+          if (eb.isStun) {
+            stunPlayer(eb.stunDur || 1.15);
+            damagePlayer(eb.dmg || 8);
+          } else {
+            damagePlayer(eb.dmg || 15);
+          }
         }
       }
 
-      // Enemies
+      // Enemies & Airships
       for (let i = enemies.length - 1; i >= 0; i--) {
         const e = enemies[i];
         if (e.flashTimer > 0) e.flashTimer -= dt;
         if (e.spawnScale < 1) e.spawnScale = Math.min(1, e.spawnScale + dt * 3.8);
 
         const ang = Math.atan2(player.y - e.y, player.x - e.x);
-        e.angle += dt * (e.type === 'dasher' ? 5 : 2.2);
+        if (e.type === 'boss' || e.type === 'miniboss') {
+          e.angle = ang; // Airships orient their nose toward the player
+        } else {
+          e.angle += dt * (e.type === 'dasher' ? 5 : e.type === 'stunner' ? 3.8 : 2.2);
+        }
 
         const distToPlayer = Math.hypot(player.x - e.x, player.y - e.y);
 
-        if (e.type === 'shooter' && distToPlayer < 260) {
+        if ((e.type === 'shooter' || e.type === 'stunner') && distToPlayer < 260) {
           e.vx = Math.cos(ang + Math.PI * 0.65) * e.speed;
           e.vy = Math.sin(ang + Math.PI * 0.65) * e.speed;
+        } else if (e.type === 'miniboss' && distToPlayer < 220) {
+          e.vx = Math.cos(ang + Math.PI * 0.52) * e.speed;
+          e.vy = Math.sin(ang + Math.PI * 0.52) * e.speed;
+        } else if (e.type === 'boss' && distToPlayer < 190) {
+          e.vx = Math.cos(ang + Math.PI * 0.5) * (e.speed * 0.75);
+          e.vy = Math.sin(ang + Math.PI * 0.5) * (e.speed * 0.75);
         } else {
           e.vx = Math.cos(ang) * e.speed;
           e.vy = Math.sin(ang) * e.speed;
@@ -4310,33 +4576,112 @@
           }
         }
 
-        if (e.type === 'shooter' || e.type === 'boss') {
+        // Ranged Attacks: Shooter, Stunner, Mini-Boss Airship, and Big Boss Airship
+        if (e.type === 'shooter' || e.type === 'stunner' || e.type === 'miniboss' || e.type === 'boss') {
           e.shootTimer -= dt;
           if (e.shootTimer <= 0) {
+            e.burstCount = (e.burstCount || 0) + 1;
+
             if (e.type === 'shooter') {
-              e.shootTimer = Math.max(1.1, 2.2 - wave * 0.05);
+              e.shootTimer = Math.max(1.0, 2.1 - floor * 0.12 - floorWave * 0.03);
               enemyBullets.push({
                 x: e.x,
                 y: e.y,
-                vx: Math.cos(ang) * 310,
-                vy: Math.sin(ang) * 310,
+                vx: Math.cos(ang) * 320,
+                vy: Math.sin(ang) * 320,
                 radius: 5.5,
-                color: '#ff00e5'
+                color: '#ff00e5',
+                dmg: 14
               });
-            } else {
-              e.shootTimer = 1.6;
-              const burst = 8;
+            } else if (e.type === 'stunner') {
+              e.shootTimer = Math.max(1.35, 2.4 - floor * 0.12);
+              enemyBullets.push({
+                x: e.x,
+                y: e.y,
+                vx: Math.cos(ang) * 355,
+                vy: Math.sin(ang) * 355,
+                radius: 6.5,
+                color: '#00e5ff',
+                isStun: true,
+                stunDur: 1.05 + floor * 0.1,
+                dmg: 9
+              });
+            } else if (e.type === 'miniboss') {
+              // Mini-Boss Airship: Twin plasma spread + every 2nd volley fires a central EMP Stun Orb!
+              e.shootTimer = Math.max(1.0, 1.55 - floor * 0.08);
+              for (let s = -1; s <= 1; s += 2) {
+                const sAng = ang + s * 0.18;
+                enemyBullets.push({
+                  x: e.x,
+                  y: e.y,
+                  vx: Math.cos(sAng) * 330,
+                  vy: Math.sin(sAng) * 330,
+                  radius: 6,
+                  color: '#00e676',
+                  dmg: 16
+                });
+              }
+              if (e.burstCount % 2 === 0) {
+                enemyBullets.push({
+                  x: e.x,
+                  y: e.y,
+                  vx: Math.cos(ang) * 365,
+                  vy: Math.sin(ang) * 365,
+                  radius: 7.5,
+                  color: '#00e5ff',
+                  isStun: true,
+                  stunDur: 1.25,
+                  dmg: 12
+                });
+              }
+            } else if (e.type === 'boss') {
+              // Dreadnought Big Boss Airship: Radial bullet ring + aimed EMP Stun triad!
+              e.shootTimer = Math.max(1.15, 1.65 - floor * 0.08);
+              const burst = 8 + floor * 2;
               for (let k = 0; k < burst; k++) {
                 const bAng = ang + (Math.PI * 2 * k) / burst;
                 enemyBullets.push({
                   x: e.x,
                   y: e.y,
-                  vx: Math.cos(bAng) * 280,
-                  vy: Math.sin(bAng) * 280,
+                  vx: Math.cos(bAng) * 290,
+                  vy: Math.sin(bAng) * 290,
                   radius: 6.5,
-                  color: '#ff1744'
+                  color: '#ff1744',
+                  dmg: 18
                 });
               }
+              if (e.burstCount % 2 === 0) {
+                for (let s = -1; s <= 1; s++) {
+                  const stAng = ang + s * 0.22;
+                  enemyBullets.push({
+                    x: e.x,
+                    y: e.y,
+                    vx: Math.cos(stAng) * 360,
+                    vy: Math.sin(stAng) * 360,
+                    radius: 8,
+                    color: '#00e5ff',
+                    isStun: true,
+                    stunDur: 1.35,
+                    dmg: 14
+                  });
+                }
+              }
+            }
+          }
+        }
+
+        // Big Boss Airship periodically deploys escort reinforcements (including Mini-Boss Airship on Lvl 20!)
+        if (e.type === 'boss' && enemies.length < 45) {
+          e.summonTimer -= dt;
+          if (e.summonTimer <= 0) {
+            e.summonTimer = 7.5;
+            if (floorWave === 20 && enemies.filter(x => x.type === 'miniboss').length < 3) {
+              spawnEnemy('miniboss', e.x + (Math.random() - 0.5) * 80, e.y + (Math.random() - 0.5) * 80);
+              spawnFloatingText(e.x, e.y - e.radius - 16, '🛸 MINI-BOSS DEPLOYED!', '#00e676');
+            } else {
+              spawnEnemy('stunner', e.x + 40, e.y);
+              spawnEnemy('dasher', e.x - 40, e.y);
+              spawnFloatingText(e.x, e.y - e.radius - 16, '⚠️ ESCORT DRONES DEPLOYED!', '#ffea00');
             }
           }
         }
@@ -4345,7 +4690,8 @@
           if (player.dashTimer > 0) {
             damageEnemy(e, player.damage * 2.6, true);
           } else if (player.invulnTimer <= 0) {
-            damagePlayer(e.type === 'boss' ? 30 : 18);
+            if (e.type === 'stunner') stunPlayer(1.0);
+            damagePlayer(e.type === 'boss' ? 32 : e.type === 'miniboss' ? 24 : 18);
           }
         }
       }
@@ -4617,9 +4963,10 @@
 
     function render() {
       const isFurry = config.theme === 'FURRY';
+      const floorTheme = FLOOR_THEMES[Math.min(FLOOR_THEMES.length - 1, Math.max(0, floor - 1))];
       ctx.save();
 
-      ctx.fillStyle = 'rgba(6, 5, 14, 0.42)';
+      ctx.fillStyle = floorTheme ? floorTheme.bg : 'rgba(6, 5, 14, 0.42)';
       ctx.fillRect(0, 0, width, height);
 
       if (screenShake > 0) {
@@ -4628,12 +4975,13 @@
         ctx.translate(sx, sy);
       }
 
-      // Reactive Cyber Grid
+      // Reactive Cyber Grid (Colored by Current Floor Theme!)
       const gridSize = 58;
       const baseAlpha = 0.06 + gridPulse * 0.08;
-      ctx.strokeStyle = isFurry
-        ? `rgba(255, 105, 180, ${baseAlpha})`
-        : `rgba(0, 229, 255, ${baseAlpha})`;
+      const rgbStr = isFurry
+        ? (floorTheme ? floorTheme.furryGrid : '255, 105, 180')
+        : (floorTheme ? floorTheme.gridColor : '0, 229, 255');
+      ctx.strokeStyle = `rgba(${rgbStr}, ${baseAlpha})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
       for (let x = 0; x < width; x += gridSize) {
@@ -4711,38 +5059,112 @@
         }
       });
 
-      // Enemy Bullets
+      // Enemy Bullets (with distinct Electric Diamond Ring for EMP Stun Bolts)
       enemyBullets.forEach((eb) => {
         ctx.save();
         ctx.fillStyle = eb.color;
-        applyGlow(eb.color, 10);
+        applyGlow(eb.color, eb.isStun ? 15 : 10);
         ctx.beginPath();
         ctx.arc(eb.x, eb.y, eb.radius, 0, Math.PI * 2);
         ctx.fill();
+        if (eb.isStun) {
+          ctx.strokeStyle = '#ffea00';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.arc(eb.x, eb.y, eb.radius + 3.5 + Math.sin(performance.now() * 0.025) * 1.5, 0, Math.PI * 2);
+          ctx.stroke();
+        }
         ctx.restore();
       });
 
-      // Enemies (with Portal Materialization Scale-In Animation)
+      // Enemies & Boss Airships (with Portal Materialization Scale-In Animation)
       enemies.forEach((e) => {
         ctx.save();
         const sc = e.spawnScale !== undefined ? e.spawnScale : 1;
         const col = e.flashTimer > 0 ? '#ffffff' : e.color;
         ctx.strokeStyle = col;
-        ctx.fillStyle = e.flashTimer > 0 ? '#ffffff' : 'rgba(14, 10, 28, 0.88)';
-        ctx.lineWidth = e.type === 'boss' ? 4 : 2.3;
-        applyGlow(e.color, 12);
+        ctx.fillStyle = e.flashTimer > 0 ? '#ffffff' : 'rgba(14, 10, 28, 0.9)';
+        ctx.lineWidth = e.type === 'boss' ? 3.8 : e.type === 'miniboss' ? 3.0 : 2.3;
+        applyGlow(e.color, e.type === 'boss' ? 18 : 12);
 
-        drawPolygon(e.x, e.y, e.radius * sc, e.sides, e.angle);
-        ctx.fill();
-        ctx.stroke();
+        if (e.type === 'boss' || e.type === 'miniboss') {
+          // Render Multi-Wing Armored Cyber Airship Hull
+          ctx.save();
+          ctx.translate(e.x, e.y);
+          ctx.rotate(e.angle);
+          ctx.scale(sc, sc);
+          const r = e.radius;
 
-        if ((e.type === 'tank' || e.type === 'boss') && e.hp < e.maxHp) {
-          const bw = e.radius * 1.8;
-          const bh = 5;
-          ctx.fillStyle = 'rgba(0,0,0,0.6)';
-          ctx.fillRect(e.x - bw / 2, e.y - e.radius - 14, bw, bh);
+          // Twin Rear Thruster Plumes
+          const thrusterLen = r * (0.45 + Math.random() * 0.2);
+          ctx.fillStyle = e.type === 'boss' ? '#ff9100' : '#00f3ff';
+          ctx.beginPath();
+          ctx.moveTo(-r * 0.75, -r * 0.35);
+          ctx.lineTo(-r * 0.75 - thrusterLen, -r * 0.25);
+          ctx.lineTo(-r * 0.75, -r * 0.15);
+          ctx.moveTo(-r * 0.75, r * 0.15);
+          ctx.lineTo(-r * 0.75 - thrusterLen, r * 0.25);
+          ctx.lineTo(-r * 0.75, r * 0.35);
+          ctx.fill();
+
+          // Swept Airship Wings / Sponsons
+          ctx.fillStyle = e.flashTimer > 0 ? '#ffffff' : 'rgba(18, 12, 38, 0.94)';
+          ctx.strokeStyle = col;
+          ctx.beginPath();
+          ctx.moveTo(r * 1.05, 0);
+          ctx.lineTo(r * 0.25, -r * 0.55);
+          ctx.lineTo(-r * 0.35, -r * 1.15);
+          ctx.lineTo(-r * 0.85, -r * 0.85);
+          ctx.lineTo(-r * 0.7, -r * 0.35);
+          ctx.lineTo(-r * 0.9, 0);
+          ctx.lineTo(-r * 0.7, r * 0.35);
+          ctx.lineTo(-r * 0.85, r * 0.85);
+          ctx.lineTo(-r * 0.35, r * 1.15);
+          ctx.lineTo(r * 0.25, r * 0.55);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Central Armored Bridge & EMP Core
+          ctx.fillStyle = e.type === 'boss' ? 'rgba(255, 0, 229, 0.28)' : 'rgba(0, 230, 118, 0.28)';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, r * 0.52, r * 0.28, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        } else {
+          drawPolygon(e.x, e.y, e.radius * sc, e.sides, e.angle);
+          ctx.fill();
+          ctx.stroke();
+
+          // Inner electric core indicator for Stunner drones
+          if (e.type === 'stunner') {
+            ctx.fillStyle = '#ffea00';
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.radius * 0.32 * sc, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        if (e.type === 'tank' || e.type === 'miniboss' || e.type === 'boss') {
+          const bw = e.radius * (e.type === 'boss' ? 2.2 : 1.9);
+          const bh = e.type === 'boss' ? 7 : 5.5;
+          const by = e.y - e.radius - (e.type === 'boss' ? 20 : 15);
+          ctx.fillStyle = 'rgba(0,0,0,0.72)';
+          ctx.fillRect(e.x - bw / 2, by, bw, bh);
           ctx.fillStyle = e.color;
-          ctx.fillRect(e.x - bw / 2, e.y - e.radius - 14, bw * (e.hp / e.maxHp), bh);
+          ctx.fillRect(e.x - bw / 2, by, bw * Math.max(0, e.hp / e.maxHp), bh);
+
+          if (e.type === 'boss' || e.type === 'miniboss') {
+            ctx.font = '700 9px Orbitron, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText(
+              e.type === 'boss' ? '🛸 BIG BOSS AIRSHIP' : '✈️ MINI-BOSS AIRSHIP',
+              e.x,
+              by - 4
+            );
+          }
         }
         ctx.restore();
       });
@@ -4803,6 +5225,31 @@
           ctx.restore();
         } else {
           drawPlayerAvatar(isFurry);
+        }
+
+        // EMP Stunned Crackling Arc Indicator on Player
+        if (player.stunTimer > 0) {
+          ctx.save();
+          ctx.strokeStyle = Math.floor(performance.now() / 55) % 2 === 0 ? '#00e5ff' : '#ffea00';
+          ctx.lineWidth = 2.4;
+          applyGlow('#00e5ff', 14);
+          ctx.beginPath();
+          const segs = 10;
+          for (let s = 0; s <= segs; s++) {
+            const a = (s / segs) * Math.PI * 2;
+            const jitter = (Math.random() - 0.5) * 6;
+            const px = player.x + Math.cos(a) * (player.radius + 9 + jitter);
+            const py = player.y + Math.sin(a) * (player.radius + 9 + jitter);
+            if (s === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.stroke();
+
+          ctx.font = '800 10px Orbitron, sans-serif';
+          ctx.fillStyle = '#ffea00';
+          ctx.textAlign = 'center';
+          ctx.fillText('⚡ STUNNED [SPACE]', player.x, player.y + player.radius + 22);
+          ctx.restore();
         }
       }
 
