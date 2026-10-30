@@ -1546,7 +1546,7 @@
         <span id="adminApiStatus" style="color:#00f3ff;">READY</span>
       </div>
       <div class="cheat-input-group" style="margin-bottom:5px;">
-        <input type="password" id="adminKeyInput" placeholder="WORKER ADMIN KEY (DEFAULT: OVERLORD)" value="OVERLORD" />
+        <input type="password" id="adminKeyInput" placeholder="ENTER ADMIN KEY" value="" />
         <button id="adminPurgeBtn" style="background:#ff1744;color:#fff;" title="Reset all scores to defaults">RESET ALL</button>
       </div>
       <div class="admin-player-list" id="adminPlayerList">
@@ -2723,7 +2723,7 @@
         document.getElementById('cheatDrawer').classList.remove('hidden');
         return;
       }
-      const pwd = prompt('👑 ENTER OVERLORD ADMIN PASSWORD (default: OVERLORD):');
+      const pwd = prompt('👑 ENTER ADMIN PASSWORD:');
       if (pwd && (pwd.toUpperCase() === 'OVERLORD' || pwd === 'admin123')) {
         document.getElementById('adminKeyInput').value = pwd;
         unlockAdminPanel(true);

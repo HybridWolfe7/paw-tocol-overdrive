@@ -9,8 +9,8 @@ A zero-dependency HTML5 Canvas 2D arcade survival game, live hardware stress-tes
 
 - **🌐 Global Leaderboard & Live Holographic Ghost Pilots**:
   - Compete on two global leaderboards: **🏆 Top Combat Score** and **🔥 Top GPU Hardware Stress Benchmark**.
-  - **👻 Live Ghost Pilots**: Your flight path is recorded during each run; top players' holographic ghost ships fly alongside you in real time in the arena!
-  - Works seamlessly online via **Cloudflare Workers** (`/api/leaderboard`) and automatically falls back to `localStorage` when played offline or via VS Code Go Live.
+  - **👻 Live Ghost Pilots**: Your flight path is recorded during each run; enable Live Ghost Pilots on the launch screen to watch top players' holographic ghost ships fly alongside you in the arena!
+  - Works seamlessly online via **Cloudflare Workers** (`/api/leaderboard`) and automatically falls back to `localStorage` when played offline.
 - **🎭 Dual Visual Theme Engine (Instant Toggle)**:
   - **🦊 Furry Mode (`PAW-TOCOL`)**: Cyber-Kitsune avatar with animated twitching holo-ears, wagging plasma tail, Toe-Bean XP gems, and Paw-Blasters.
   - **🚀 Normie Mode (`MILITARY CYBER`)**: Tactical delta-wing / stealth / juggernaut fighters, diamond data cores, and military cyber HUD.
@@ -40,39 +40,13 @@ A zero-dependency HTML5 Canvas 2D arcade survival game, live hardware stress-tes
 
 ---
 
-## 🕹️ Secret Keyboard Cheats (Public) & Hidden Admin Panel
+## ☁️ Deploying to Cloudflare Workers
 
-The Sandbox Cheat Console is **completely hidden from the public UI** so normal players cannot see any cheat buttons or open a menu.
+This repository is pre-configured with [`index.html`](index.html), [`worker.js`](worker.js), and [`wrangler.jsonc`](wrangler.jsonc) so your Cloudflare Worker serves both the static game and the `/api/leaderboard` API endpoints.
 
-### 1. Public GTA-Style Secret Keyboard Codes
-Just like classic GTA, players can type secret codes **directly on their keyboard during gameplay** (no console needed!) to trigger a slide-in `"CHEAT ACTIVATED"` notification toast:
-- `AWWOO` or `BAGUVIX` — Toggle Invulnerable **God Mode**
-- `HESOYAM` or `BEANS` — Instant **Max HP, Armor & +5 Level Kit Boost**
-- `ZOOMIES` — Toggle **Infinite Zero-Cooldown Dash**
-- `BOOP` or `HADOUKEN` — Trigger a free **Screen-Clearing Orbital EMP Nuke**
-- `FLOOF` — Spawn **+4 Orbiting Plasma Sentinels**
-- `OWO` or `UWU` — Toggle **Hyper-Gatling Overclocked Fire Rate**
-- `BENCH` — Inject **+100 Hostile Swarm Entities** for instant FPS stress testing
-
-*(Note: Runs that use God Mode outside of Benchmark Mode are automatically marked as `UNRANKED` so the Global Leaderboard stays fair!)*
-
-### 2. Unlocking the Hidden Overlord Admin & Moderation Panel (Owner Only)
-As the game owner/admin, you can unlock the hidden **👑 OVERLORD ADMIN & SANDBOX DECK** (which gives you 1-click sandbox buttons + Cloudflare Leaderboard Purge/Moderation controls) in three ways:
-1. **Type on Keyboard**: Type `ADMINOVERLORD` directly on your keyboard at any time.
-2. **URL Parameter**: Open the game with `?admin=1` (e.g., `https://your-worker.workers.dev/?admin=1`).
-3. **Mobile / Touch Secret Gesture**: Tap the main game title (`PAW-TOCOL: OVERDRIVE`) **5 times** on the Start Screen and enter the admin password (default: `OVERLORD`).
-
----
-
-## ☁️ Deploying to Cloudflare Workers (with API & Static Assets)
-
-This folder is pre-configured with [`worker.js`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/worker.js) and [`wrangler.jsonc`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/wrangler.jsonc) so your Cloudflare Worker serves both the game HTML and the `/api/leaderboard` + `/api/admin/clear` endpoints.
-
-### Option A: Deploy via GitHub + Cloudflare Dashboard (Recommended)
-1. Push [`index.html`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/index.html) (and [`neon_overdrive.html`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/neon_overdrive.html)), [`worker.js`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/worker.js), [`wrangler.jsonc`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/wrangler.jsonc), and [`README.md`](file:///c:/Users/Hybrid/Desktop/Discarded%20Item/RandomProject/GameCreation_sample/README.md) to your GitHub repository.
-2. Open the **Cloudflare Dashboard** → **Workers & Pages** → **Create Application** → **Import a repository**.
-3. Select your GitHub repository and deploy!
-4. *(Optional)* To change your secret Admin Moderation password, go to your Worker's **Settings → Variables and Secrets** in Cloudflare and set `ADMIN_KEY` to your custom secret password.
+### Option A: Deploy via GitHub + Cloudflare Dashboard
+1. Open the **Cloudflare Dashboard** → **Workers & Pages** → **Create Application** → **Import a repository**.
+2. Select this GitHub repository and deploy.
 
 ### Option B: Deploy via Wrangler CLI
 ```bash
