@@ -1,0 +1,14 @@
+# Dependencies & Build
+node_modules/
+dist/
+
+# Cloudflare Wrangler local state & secrets
+.wrangler/
+.dev.vars
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
