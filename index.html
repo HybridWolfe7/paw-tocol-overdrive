@@ -380,21 +380,21 @@
     }
 
     /* =========================================================================
-       CHEAT / DEV CONSOLE DRAWER
+       CHEAT / DEV CONSOLE DRAWER & PASSWORD MODAL
        ========================================================================= */
     #cheatToggleBtn {
       position: fixed;
       bottom: 14px;
       right: 22px;
-      z-index: 45;
+      z-index: 68;
       background: rgba(20, 12, 38, 0.94);
       border: 1px solid var(--accent);
       color: #ff80ab;
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.74rem;
+      font-size: 0.76rem;
       font-weight: 700;
       letter-spacing: 1.2px;
-      padding: 9px 15px;
+      padding: 10px 16px;
       border-radius: 99px;
       cursor: pointer;
       box-shadow: 0 0 18px rgba(255, 64, 129, 0.45);
@@ -402,15 +402,99 @@
 
     #cheatDrawer {
       position: fixed;
-      bottom: 56px;
-      right: 22px;
-      width: 345px;
-      max-height: 82vh;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(94vw, 680px);
+      max-height: 86vh;
       overflow-y: auto;
-      z-index: 45;
+      z-index: 70;
       pointer-events: auto;
-      border-color: var(--accent);
-      background: rgba(12, 8, 24, 0.96);
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      background: rgba(10, 8, 22, 0.97);
+      padding: 18px 22px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 229, 255, 0.3);
+    }
+
+    .admin-section-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .admin-section-hdr {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      color: #00f3ff;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-ctrl-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .admin-select,
+    .admin-num-input {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 243, 255, 0.4);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      padding: 6px 8px;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .admin-action-pill {
+      background: rgba(0, 229, 255, 0.16);
+      border: 1px solid rgba(0, 229, 255, 0.45);
+      color: #00f3ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .admin-action-pill:hover,
+    .admin-action-pill.active {
+      background: var(--primary);
+      color: #05050a;
+    }
+
+    #adminAuthModal {
+      position: fixed;
+      inset: 0;
+      z-index: 75;
+      background: rgba(4, 3, 10, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .admin-auth-card {
+      background: rgba(12, 10, 26, 0.97);
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      padding: 24px 28px;
+      width: min(92vw, 400px);
+      text-align: center;
+      box-shadow: 0 0 45px rgba(0, 229, 255, 0.35);
     }
 
     .admin-player-list {
@@ -1276,14 +1360,14 @@
         margin-top: 2px;
       }
 
-      /* Compact Mobile Pill Bars & Centered Popover Card for Statistic Tiles */
+      /* Compact Mobile Pill Bars & Non-Overlapping Popover Card for Statistic Tiles */
       #hwSidebar,
       #telemetrySidebar {
-        top: 98px;
+        top: 108px;
         width: auto;
-        min-width: 118px;
-        max-width: 46vw;
-        padding: 5px 9px;
+        min-width: 96px;
+        max-width: 42vw;
+        padding: 4px 8px;
         z-index: 24;
       }
 
@@ -1301,24 +1385,26 @@
         left: 50%;
         right: auto;
         transform: translateX(-50%);
-        top: 132px;
-        width: min(92vw, 310px);
-        max-width: 92vw;
+        top: 142px;
+        width: min(94vw, 340px);
+        max-width: 94vw;
         padding: 10px 12px;
-        background: rgba(12, 9, 24, 0.94);
+        background: rgba(12, 9, 24, 0.96);
         border-color: var(--primary);
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 243, 255, 0.25);
         z-index: 28;
       }
 
       .panel-header {
-        font-size: 0.6rem;
-        letter-spacing: 0.8px;
+        font-size: 0.56rem;
+        letter-spacing: 0.5px;
         padding-bottom: 0;
         margin-bottom: 0;
         border-bottom: none;
-        gap: 6px;
+        gap: 4px;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       #hwSidebar:not(.sidebar-collapsed) .panel-header,
@@ -1330,31 +1416,31 @@
       }
 
       .telemetry-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 4px;
-        margin-bottom: 6px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-bottom: 8px;
       }
 
       .metric-box {
-        padding: 4px 5px;
+        padding: 5px 6px;
         border-radius: 6px;
         text-align: center;
       }
 
       .metric-label {
-        font-size: 0.5rem;
-        letter-spacing: 0.3px;
+        font-size: 0.54rem;
+        letter-spacing: 0.4px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       .metric-value {
-        font-size: 0.72rem;
+        font-size: 0.78rem;
       }
 
       .graph-canvas {
-        height: 32px;
+        height: 34px;
         margin-bottom: 6px;
       }
 
@@ -1369,26 +1455,28 @@
       }
 
       #cheatToggleBtn {
-        top: 98px;
+        top: 140px;
         bottom: auto;
         left: 50%;
         right: auto;
         transform: translateX(-50%);
-        padding: 5px 10px;
+        padding: 5px 12px;
         font-size: 0.58rem;
-        z-index: 24;
+        z-index: 68;
         white-space: nowrap;
       }
 
       #cheatDrawer {
+        top: 50%;
         bottom: auto;
-        top: 132px;
         left: 50%;
         right: auto;
-        transform: translateX(-50%);
-        width: min(92vw, 310px);
-        background: rgba(14, 10, 28, 0.95);
-        z-index: 29;
+        transform: translate(-50%, -50%);
+        width: min(95vw, 560px);
+        max-height: 85vh;
+        padding: 14px 14px;
+        background: rgba(10, 8, 22, 0.98);
+        z-index: 70;
       }
 
       .overlay-screen {
@@ -1651,49 +1739,106 @@
     <div class="gta-toast-body" id="gtaToastText">GOD MODE ENABLED</div>
   </div>
 
+  <!-- HIDDEN PASSWORD AUTHENTICATION MODAL (Masked Password Input) -->
+  <div id="adminAuthModal" class="hidden">
+    <div class="admin-auth-card">
+      <div style="font-size:2rem;margin-bottom:4px;">🔒👑</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:900;color:#00f3ff;letter-spacing:2px;margin-bottom:6px;">ADMIN TERMINAL AUTH</div>
+      <div style="font-size:0.8rem;color:#b0bec5;margin-bottom:14px;">Enter authorized Overlord security passkey:</div>
+      <input type="password" id="adminAuthPassInput" placeholder="••••••••••••" autocomplete="off" style="width:100%;background:rgba(0,0,0,0.65);border:1px solid #00f3ff;color:#00e676;font-family:'Orbitron',sans-serif;font-size:0.9rem;padding:10px 12px;border-radius:8px;outline:none;text-align:center;margin-bottom:12px;" />
+      <div style="display:flex;gap:8px;">
+        <button class="btn-neon" id="adminAuthSubmitBtn" style="flex:1;padding:10px;font-size:0.82rem;">UNLOCK</button>
+        <button id="adminAuthCancelBtn" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.25);color:#cfd8dc;font-family:'Orbitron',sans-serif;font-size:0.78rem;padding:10px 14px;border-radius:8px;cursor:pointer;">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
   <!-- HIDDEN ADMIN & SANDBOX DECK (Invisible to Public until unlocked via Secret Code / Admin Password) -->
   <button id="cheatToggleBtn" class="hidden">👑 ADMIN DECK [`]</button>
 
   <div id="cheatDrawer" class="hud-panel hidden">
-    <div class="cheat-title">
-      <span>👑 OVERLORD ADMIN &amp; SANDBOX</span>
-      <span style="font-size:0.68rem;color:#00e676;">AUTHORIZED</span>
-    </div>
-
-    <div class="cheat-input-group">
-      <input type="text" id="cheatCodeInput" placeholder="EXEC CODE (AWWOO, BENCH, BEANS)" />
-      <button id="cheatCodeBtn">RUN</button>
-    </div>
-
-    <div class="cheat-grid">
-      <button class="cheat-btn" id="cheatGodBtn"><span>🛡️ God Mode</span><span id="godState">OFF</span></button>
-      <button class="cheat-btn" id="cheatDashBtn"><span>⚡ Inf Dash</span><span id="dashState">OFF</span></button>
-      <button class="cheat-btn" id="cheatHyperBtn"><span>🔥 Hyper Fire</span><span id="hyperState">OFF</span></button>
-      <button class="cheat-btn" id="cheatMagnetBtn"><span>🧲 XP Vacuum</span><span id="magState">OFF</span></button>
-      <button class="cheat-btn" id="cheatLvlBtn"><span>🆙 +1 Level</span><span>ACT</span></button>
-      <button class="cheat-btn" id="cheatMaxBtn"><span>👑 Max Kit (+5)</span><span>ACT</span></button>
-      <button class="cheat-btn" id="cheatNukeBtn"><span>💥 EMP Nuke</span><span>ACT</span></button>
-      <button class="cheat-btn" id="cheatSwarmBtn"><span>🔥 +100 Swarm</span><span>ACT</span></button>
-      <button class="cheat-btn" id="cheatBossBtn"><span>👾 Spawn Boss</span><span>ACT</span></button>
-      <button class="cheat-btn" id="cheatScoreBtn"><span>💎 +50k Score</span><span>ACT</span></button>
-    </div>
-
-    <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.12);">
-      <div style="font-family:'Orbitron',sans-serif;font-size:0.66rem;color:#ffea00;margin-bottom:5px;display:flex;justify-content:space-between;">
-        <span>🌐 LEADERBOARD &amp; PLAYER MODERATION</span>
-        <span id="adminApiStatus" style="color:#00f3ff;">READY</span>
+    <div class="cheat-title" style="align-items:center;border-bottom:1px solid rgba(0,229,255,0.25);padding-bottom:8px;margin-bottom:10px;">
+      <span style="font-size:0.95rem;color:#00f3ff;font-weight:900;">👑 OVERLORD COMMAND &amp; SANDBOX SUITE</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:0.66rem;color:#00e676;background:rgba(0,230,118,0.14);padding:3px 8px;border-radius:99px;border:1px solid #00e676;">AUTHORIZED</span>
+        <button id="closeAdminDrawerBtn" style="background:rgba(255,23,68,0.2);border:1px solid #ff1744;color:#ff8a80;font-family:'Orbitron',sans-serif;font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:6px;cursor:pointer;">✖ CLOSE</button>
       </div>
-      <div class="cheat-input-group" style="margin-bottom:5px;">
-        <input type="password" id="adminKeyInput" placeholder="ENTER ADMIN KEY" value="" />
-        <button id="adminPurgeBtn" style="background:#ff1744;color:#fff;" title="Reset all scores to defaults">RESET ALL</button>
+    </div>
+
+    <div class="cheat-input-group" style="margin-bottom:10px;">
+      <input type="text" id="cheatCodeInput" placeholder="EXEC CHEAT CODE (AWWOO, HESOYAM, ZOOMIES, BEANS, BOOP, OWO, BENCH)" />
+      <button id="cheatCodeBtn">EXEC</button>
+    </div>
+
+    <!-- SECTION 1: LIVE SANDBOX TOGGLES & INSTANT SPAWNERS -->
+    <div class="admin-section-box">
+      <div class="admin-section-hdr">
+        <span>⚡ 1. SANDBOX OVERCLOCKS &amp; ENTITY SPAWNER</span>
+        <span style="color:#ff80ab;font-size:0.62rem;">HOTKEY: [`]</span>
       </div>
-      <div class="admin-player-list" id="adminPlayerList">
+      <div class="cheat-grid" style="grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap:6px;">
+        <button class="cheat-btn" id="cheatGodBtn"><span>🛡️ God Mode</span><span id="godState">OFF</span></button>
+        <button class="cheat-btn" id="cheatDashBtn"><span>⚡ Inf Dash</span><span id="dashState">OFF</span></button>
+        <button class="cheat-btn" id="cheatHyperBtn"><span>🔥 Hyper Fire</span><span id="hyperState">OFF</span></button>
+        <button class="cheat-btn" id="cheatMagnetBtn"><span>🧲 XP Vacuum</span><span id="magState">OFF</span></button>
+        <button class="cheat-btn" id="cheatLvlBtn"><span>🆙 +1 Core Lvl</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatMaxBtn"><span>👑 Max Kit (+5)</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatNukeBtn"><span>💥 EMP Nuke</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatClearHostilesBtn"><span>🧹 Clear Enemies</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatSwarmBtn"><span>🔥 +100 Swarm</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatMiniBossBtn"><span>✈️ Mini-Boss</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatBossBtn"><span>🛸 Big Boss</span><span>ACT</span></button>
+        <button class="cheat-btn" id="cheatScoreBtn"><span>💎 +50k Score</span><span>ACT</span></button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: LIVE DIFFICULTY, SHIP, FLOOR & LEVEL WARP -->
+    <div class="admin-section-box">
+      <div class="admin-section-hdr">
+        <span>🎛️ 2. LIVE DIFFICULTY, FLOOR WARP &amp; PLAYER TWEAKER</span>
+        <span id="adminLiveWaveLabel" style="color:#ffea00;">FL 1 // LVL 1</span>
+      </div>
+      <div class="admin-ctrl-row" style="margin-bottom:8px;">
+        <span style="font-size:0.68rem;color:#b0bec5;font-weight:700;">DIFFICULTY:</span>
+        <button class="admin-action-pill" data-admdiff="CHILL">🟢 CHILL</button>
+        <button class="admin-action-pill" data-admdiff="NORMAL">🔵 NORMAL</button>
+        <button class="admin-action-pill" data-admdiff="NIGHTMARE">🔴 NIGHTMARE</button>
+        <button class="admin-action-pill" data-admdiff="BENCHMARK">🔥 STRESS</button>
+      </div>
+      <div class="admin-ctrl-row" style="margin-bottom:8px;">
+        <span style="font-size:0.68rem;color:#b0bec5;font-weight:700;">FLOOR (1-5):</span>
+        <input type="number" id="adminFloorInput" class="admin-num-input" min="1" max="5" value="1" style="width:52px;" />
+        <span style="font-size:0.68rem;color:#b0bec5;font-weight:700;">LVL (1-20):</span>
+        <input type="number" id="adminWaveInput" class="admin-num-input" min="1" max="20" value="1" style="width:56px;" />
+        <button class="admin-action-pill" id="adminWarpBtn" style="background:#00e676;color:#05050a;border-color:#00e676;">🚀 WARP FLOOR/LVL</button>
+        <button class="admin-action-pill" id="adminCutsceneBtn" title="Trigger Floor Transition Cutscene">🎬 NEXT FLOOR CUTSCENE</button>
+      </div>
+      <div class="admin-ctrl-row">
+        <span style="font-size:0.68rem;color:#b0bec5;font-weight:700;">CORE LVL:</span>
+        <input type="number" id="adminSetCoreLvl" class="admin-num-input" min="1" max="999" value="10" style="width:58px;" />
+        <button class="admin-action-pill" id="adminSetCoreLvlBtn">SET LVL</button>
+        <span style="font-size:0.68rem;color:#b0bec5;font-weight:700;">DMG MULT:</span>
+        <button class="admin-action-pill" id="adminDmg2xBtn">⚔️ 2x DMG</button>
+        <button class="admin-action-pill" id="adminSpeedBoostBtn">🚀 +50% SPD</button>
+        <button class="admin-action-pill" id="adminFullHealBtn">💖 FULL HEAL</button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: GLOBAL LEADERBOARD & PLAYER MODERATION -->
+    <div class="admin-section-box" style="margin-bottom:4px;">
+      <div class="admin-section-hdr">
+        <span>🌐 3. GLOBAL LEADERBOARD &amp; PLAYER MODERATION</span>
+        <span id="adminApiStatus" style="color:#00e676;">READY</span>
+      </div>
+      <input type="password" id="adminKeyInput" class="hidden" value="" />
+      <div class="admin-player-list" id="adminPlayerList" style="max-height:125px;">
         <div style="color:#90a4ae;font-size:0.68rem;text-align:center;">Loading players...</div>
       </div>
-      <div class="cheat-input-group" style="margin-bottom:2px;">
-        <input type="text" id="adminInjectName" placeholder="CALLSIGN" style="width:95px;background:rgba(0,0,0,0.5);border:1px solid rgba(0,243,255,0.35);color:#fff;font-family:'Orbitron',sans-serif;font-size:0.66rem;padding:4px 6px;border-radius:5px;text-transform:uppercase;" />
-        <input type="number" id="adminInjectScore" placeholder="SCORE" style="flex:1;background:rgba(0,0,0,0.5);border:1px solid rgba(0,243,255,0.35);color:#00e676;font-family:'Orbitron',sans-serif;font-size:0.66rem;padding:4px 6px;border-radius:5px;" />
-        <button id="adminInjectBtn" style="background:#00e676;color:#05050a;border:none;border-radius:5px;padding:4px 8px;font-family:'Orbitron',sans-serif;font-size:0.65rem;font-weight:700;cursor:pointer;">+ADD</button>
+      <div class="cheat-input-group" style="margin-bottom:4px;margin-top:6px;">
+        <input type="text" id="adminInjectName" placeholder="CALLSIGN" style="width:110px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,243,255,0.35);color:#fff;font-family:'Orbitron',sans-serif;font-size:0.68rem;padding:5px 8px;border-radius:6px;text-transform:uppercase;" />
+        <input type="number" id="adminInjectScore" placeholder="SCORE" style="flex:1;background:rgba(0,0,0,0.6);border:1px solid rgba(0,243,255,0.35);color:#00e676;font-family:'Orbitron',sans-serif;font-size:0.68rem;padding:5px 8px;border-radius:6px;" />
+        <button id="adminInjectBtn" style="background:#00e676;color:#05050a;border:none;border-radius:6px;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:0.66rem;font-weight:700;cursor:pointer;">+ADD / UPDATE</button>
+        <button id="adminPurgeBtn" style="background:#ff1744;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:0.66rem;font-weight:700;cursor:pointer;" title="Reset all scores to defaults">RESET ALL</button>
       </div>
     </div>
 
@@ -2479,14 +2624,14 @@
     };
 
     window.addEventListener('keydown', (e) => {
-      if (
-        document.activeElement === document.getElementById('cheatCodeInput') ||
-        document.activeElement === document.getElementById('pilotCallsignInput') ||
-        document.activeElement === document.getElementById('adminKeyInput')
-      ) {
+      const activeTag = document.activeElement ? document.activeElement.tagName : '';
+      if (activeTag === 'INPUT' || activeTag === 'SELECT' || activeTag === 'TEXTAREA') {
         if (e.key === 'Enter' && document.activeElement === document.getElementById('cheatCodeInput')) {
           executeTextCheat(document.getElementById('cheatCodeInput').value);
           document.getElementById('cheatCodeInput').value = '';
+        }
+        if (e.key === 'Enter' && document.activeElement === document.getElementById('adminAuthPassInput')) {
+          verifyAdminPassword();
         }
         return;
       }
@@ -2969,12 +3114,30 @@
       }, 3100);
     }
 
-    function unlockAdminPanel(openDrawer = true) {
+    const VALID_ADMIN_PASSWORDS = ['Ahmadilman_123', 'Overlord', 'Admin_12345'];
+
+    function isValidAdminPass(pwd) {
+      if (!pwd) return false;
+      const trimmed = pwd.trim();
+      return VALID_ADMIN_PASSWORDS.some((p) => p.toLowerCase() === trimmed.toLowerCase());
+    }
+
+    function unlockAdminPanel(openDrawer = true, passUsed = 'Overlord') {
       cheats.adminUnlocked = true;
       sessionStorage.setItem('neon_admin_unlocked', '1');
+      sessionStorage.setItem('neon_admin_key', passUsed);
+      const keyInp = document.getElementById('adminKeyInput');
+      if (keyInp) keyInp.value = passUsed;
       document.getElementById('cheatToggleBtn').classList.remove('hidden');
+      const startBtn = document.getElementById('startAdminUnlockBtn');
+      if (startBtn) {
+        startBtn.textContent = '👑 OPEN ADMIN SUITE';
+        startBtn.style.borderColor = '#00e676';
+        startBtn.style.color = '#00e676';
+      }
       if (openDrawer) {
         document.getElementById('cheatDrawer').classList.remove('hidden');
+        syncAdminPanelValues();
       }
       sfx.init();
       sfx.playPowerup();
@@ -2983,23 +3146,49 @@
 
     // Check URL (?admin=1) or session for Admin Access, or 5-click secret on game title / Start Admin button
     if (window.location.search.includes('admin=1') || sessionStorage.getItem('neon_admin_unlocked') === '1') {
-      setTimeout(() => unlockAdminPanel(true), 100);
+      const savedKey = sessionStorage.getItem('neon_admin_key') || 'Overlord';
+      setTimeout(() => unlockAdminPanel(false, savedKey), 100);
     }
 
     function promptForAdminAccess() {
       if (cheats.adminUnlocked) {
         document.getElementById('cheatDrawer').classList.remove('hidden');
+        syncAdminPanelValues();
         return;
       }
-      const pwd = prompt('👑 ENTER ADMIN PASSWORD:');
-      if (pwd && (pwd.toUpperCase() === 'OVERLORD' || pwd === 'admin123')) {
-        document.getElementById('adminKeyInput').value = pwd;
-        unlockAdminPanel(true);
-      } else if (pwd !== null) {
-        showGtaToast('ACCESS DENIED', 'INVALID ADMIN CREDENTIALS', true);
+      const modal = document.getElementById('adminAuthModal');
+      const passInp = document.getElementById('adminAuthPassInput');
+      if (modal && passInp) {
+        passInp.value = '';
+        modal.classList.remove('hidden');
+        setTimeout(() => passInp.focus(), 50);
       }
     }
 
+    function verifyAdminPassword() {
+      const modal = document.getElementById('adminAuthModal');
+      const passInp = document.getElementById('adminAuthPassInput');
+      const pwd = passInp ? passInp.value.trim() : '';
+      if (isValidAdminPass(pwd)) {
+        if (modal) modal.classList.add('hidden');
+        unlockAdminPanel(true, pwd);
+      } else {
+        showGtaToast('ACCESS DENIED', 'INVALID ADMIN PASSKEY', true);
+        if (passInp) {
+          passInp.value = '';
+          passInp.style.borderColor = '#ff1744';
+          setTimeout(() => { passInp.style.borderColor = '#00f3ff'; }, 800);
+        }
+      }
+    }
+
+    document.getElementById('adminAuthSubmitBtn').addEventListener('click', verifyAdminPassword);
+    document.getElementById('adminAuthCancelBtn').addEventListener('click', () => {
+      document.getElementById('adminAuthModal').classList.add('hidden');
+    });
+    document.getElementById('closeAdminDrawerBtn').addEventListener('click', () => {
+      document.getElementById('cheatDrawer').classList.add('hidden');
+    });
     document.getElementById('startAdminUnlockBtn').addEventListener('click', promptForAdminAccess);
 
     let titleClickCount = 0;
@@ -3013,13 +3202,33 @@
 
     function toggleCheatDrawer() {
       if (!cheats.adminUnlocked) return;
-      document.getElementById('cheatDrawer').classList.toggle('hidden');
+      const drawer = document.getElementById('cheatDrawer');
+      drawer.classList.toggle('hidden');
+      if (!drawer.classList.contains('hidden')) {
+        syncAdminPanelValues();
+      }
+    }
+
+    function syncAdminPanelValues() {
+      const flInp = document.getElementById('adminFloorInput');
+      const wvInp = document.getElementById('adminWaveInput');
+      const coreInp = document.getElementById('adminSetCoreLvl');
+      const lbl = document.getElementById('adminLiveWaveLabel');
+      if (flInp) flInp.value = floor;
+      if (wvInp) wvInp.value = floorWave;
+      if (coreInp && player) coreInp.value = player.level;
+      if (lbl) lbl.textContent = `FL ${floor} // LVL ${floorWave}/20 (${config.difficulty})`;
+
+      document.querySelectorAll('[data-admdiff]').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.admdiff === config.difficulty);
+      });
     }
 
     function updateCheatUI() {
       const setBtn = (btnId, stateId, active) => {
         const btn = document.getElementById(btnId);
         const st = document.getElementById(stateId);
+        if (!btn || !st) return;
         if (active) btn.classList.add('active');
         else btn.classList.remove('active');
         st.textContent = active ? 'ON' : 'OFF';
@@ -3029,6 +3238,7 @@
       setBtn('cheatDashBtn', 'dashState', cheats.infDash);
       setBtn('cheatHyperBtn', 'hyperState', cheats.hyperFire);
       setBtn('cheatMagnetBtn', 'magState', cheats.beanMagnet);
+      syncAdminPanelValues();
 
       const preset = SHIP_PRESETS[config.ship] || SHIP_PRESETS.STRIKER;
       const anyActive = cheats.godMode || cheats.infDash || cheats.hyperFire || cheats.beanMagnet;
@@ -3151,10 +3361,22 @@
     });
     document.getElementById('cheatMaxBtn').addEventListener('click', () => applyMaxKitBoost(5));
     document.getElementById('cheatNukeBtn').addEventListener('click', () => triggerNova(true));
+    document.getElementById('cheatClearHostilesBtn').addEventListener('click', () => {
+      enemies = [];
+      enemyBullets = [];
+      showGtaToast('ADMIN OVERRIDE', 'ALL ACTIVE HOSTILES & BULLETS CLEARED');
+      updateHUD();
+    });
     document.getElementById('cheatSwarmBtn').addEventListener('click', () => spawnStressSwarm(100));
+    document.getElementById('cheatMiniBossBtn').addEventListener('click', () => {
+      spawnEnemy('miniboss');
+      showGtaToast('ADMIN SPAWNER', 'MINI-BOSS AIRSHIP INJECTED!', true);
+      updateHUD();
+    });
     document.getElementById('cheatBossBtn').addEventListener('click', () => {
       spawnEnemy('boss');
-      showGtaToast('ADMIN SPAWNER', 'DREADNOUGHT BOSS INJECTED!', true);
+      showGtaToast('ADMIN SPAWNER', 'BIG BOSS AIRSHIP INJECTED!', true);
+      updateHUD();
     });
     document.getElementById('cheatScoreBtn').addEventListener('click', () => {
       score += 50000;
@@ -3163,6 +3385,78 @@
         localStorage.setItem('pawtocol_best', bestScore);
       }
       showGtaToast('ADMIN OVERRIDE', '+50,000 COMBAT SCORE ADDED');
+      updateHUD();
+    });
+
+    // Live Difficulty Switcher in Admin Suite
+    document.querySelectorAll('[data-admdiff]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        config.difficulty = btn.dataset.admdiff;
+        document.querySelectorAll('#diffSelectGroup .select-card').forEach((c) => {
+          c.classList.toggle('selected', c.dataset.diff === config.difficulty);
+        });
+        syncAdminPanelValues();
+        updateCheatUI();
+        updateHUD();
+        showGtaToast('ADMIN DIFFICULTY OVERRIDE', `MODE SET TO: ${config.difficulty}`);
+      });
+    });
+
+    // Live Floor & Wave Warp in Admin Suite
+    document.getElementById('adminWarpBtn').addEventListener('click', () => {
+      const targetFloor = Math.max(1, Math.min(5, Number(document.getElementById('adminFloorInput').value) || 1));
+      const targetLvl = Math.max(1, Math.min(20, Number(document.getElementById('adminWaveInput').value) || 1));
+      floor = targetFloor;
+      floorWave = targetLvl;
+      wave = (floor - 1) * 20 + floorWave;
+      waveTimer = 0;
+      enemies = [];
+      enemyBullets = [];
+      spawnWave(wave);
+      syncAdminPanelValues();
+      updateHUD();
+      showGtaToast('ADMIN SECTOR WARP', `WARPED TO FLOOR ${floor} // LEVEL ${floorWave}/20`);
+    });
+
+    // Trigger Next Floor Cutscene Immediately
+    document.getElementById('adminCutsceneBtn').addEventListener('click', () => {
+      const nextFl = Math.min(5, floor + 1);
+      floor = Math.max(1, nextFl - 1);
+      floorWave = 20;
+      wave = (floor - 1) * 20 + 20;
+      enemies = [];
+      enemyBullets = [];
+      document.getElementById('cheatDrawer').classList.add('hidden');
+      triggerFloorCutscene(nextFl);
+    });
+
+    // Set Player Core Level & Stat Tweakers
+    document.getElementById('adminSetCoreLvlBtn').addEventListener('click', () => {
+      if (!player) return;
+      const targetCore = Math.max(1, Math.min(999, Number(document.getElementById('adminSetCoreLvl').value) || 10));
+      player.level = targetCore;
+      showGtaToast('ADMIN STAT TWEAK', `PILOT CORE LEVEL SET TO ${targetCore}`);
+      updateHUD();
+    });
+    document.getElementById('adminDmg2xBtn').addEventListener('click', () => {
+      if (!player) return;
+      player.damage = Math.round(player.damage * 2);
+      showGtaToast('ADMIN STAT TWEAK', `WEAPON DAMAGE DOUBLED (${player.damage})`);
+      updateHUD();
+    });
+    document.getElementById('adminSpeedBoostBtn').addEventListener('click', () => {
+      if (!player) return;
+      player.speed = Math.round(player.speed * 1.5);
+      showGtaToast('ADMIN STAT TWEAK', `THRUSTER SPEED +50% (${player.speed})`);
+      updateHUD();
+    });
+    document.getElementById('adminFullHealBtn').addEventListener('click', () => {
+      if (!player) return;
+      player.maxHp += 100;
+      player.hp = player.maxHp;
+      player.stunTimer = 0;
+      player.novas += 3;
+      showGtaToast('ADMIN STAT TWEAK', `HULL REPAIRED (${player.hp} HP) & +3 EMP`);
       updateHUD();
     });
 
@@ -3775,12 +4069,17 @@
       const theme = FLOOR_THEMES[Math.min(FLOOR_THEMES.length - 1, Math.max(0, nextFloorNum - 1))];
       const screen = document.getElementById('floorCutsceneScreen');
       const titleEl = document.getElementById('cutsceneFloorTitle');
-      const subEl = document.getElementById('cutsceneFloorSub');
+      const biomeEl = document.getElementById('cutsceneBiomeName');
+      const subEl = document.getElementById('cutsceneDesc');
       const barEl = document.getElementById('cutsceneProgressBar');
 
       if (titleEl) {
-        titleEl.textContent = theme.title;
+        titleEl.textContent = `ASCENDING TO FLOOR ${nextFloorNum}`;
         titleEl.style.color = theme.accent;
+      }
+      if (biomeEl) {
+        biomeEl.textContent = theme.title;
+        biomeEl.style.color = theme.accent;
       }
       if (subEl) {
         subEl.textContent = `${theme.sub} // +50% SHIELD REPAIRED & +1 EMP CHARGE`;
@@ -3943,14 +4242,25 @@
 
       adminListEl.innerHTML = leaderboardData.map((row, idx) => `
         <div class="admin-player-row">
-          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px;">
-            <strong>#${idx + 1} ${row.callsign || 'PILOT'}</strong> (${(row.score || 0).toLocaleString()})
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;">
+            <strong>#${idx + 1} ${row.callsign || 'PILOT'}</strong> • W${row.wave || 1} • <span style="color:#00e676;">${(row.score || 0).toLocaleString()}</span>
           </span>
-          <button class="admin-del-btn" data-callsign="${row.callsign || ''}" data-ts="${row.ts || 0}">✖ DEL</button>
+          <div style="display:flex;gap:4px;">
+            <button class="admin-del-btn admin-edit-btn" style="background:rgba(0,229,255,0.2);border-color:#00e5ff;color:#00f3ff;" data-callsign="${row.callsign || ''}" data-score="${row.score || 0}">✎ EDIT</button>
+            <button class="admin-del-btn admin-rm-btn" data-callsign="${row.callsign || ''}" data-ts="${row.ts || 0}">✖ DEL</button>
+          </div>
         </div>
       `).join('');
 
-      adminListEl.querySelectorAll('.admin-del-btn').forEach((btn) => {
+      adminListEl.querySelectorAll('.admin-edit-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.getElementById('adminInjectName').value = btn.dataset.callsign;
+          document.getElementById('adminInjectScore').value = btn.dataset.score;
+          document.getElementById('adminInjectScore').focus();
+        });
+      });
+
+      adminListEl.querySelectorAll('.admin-rm-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
           removePlayerFromLeaderboard(btn.dataset.callsign, Number(btn.dataset.ts));
         });
@@ -4003,19 +4313,24 @@
       const callsign = (nameInp.value || 'ADMIN-BOT').toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 14);
       const customScore = Math.max(0, Number(scoreInp.value) || 99999);
 
+      const existingIdx = leaderboardData.findIndex((r) => (r.callsign || '').toUpperCase() === callsign);
       const newEntry = {
         callsign,
         score: customScore,
         benchScore: Math.round(customScore * 0.35),
-        wave: 15,
-        ship: config.ship,
-        theme: config.theme,
-        gpu: hwSpecs.gpu.slice(0, 36),
-        ghost: [],
+        wave: existingIdx >= 0 ? (leaderboardData[existingIdx].wave || 15) : 15,
+        ship: existingIdx >= 0 ? (leaderboardData[existingIdx].ship || config.ship) : config.ship,
+        theme: existingIdx >= 0 ? (leaderboardData[existingIdx].theme || config.theme) : config.theme,
+        gpu: existingIdx >= 0 ? (leaderboardData[existingIdx].gpu || hwSpecs.gpu.slice(0, 36)) : hwSpecs.gpu.slice(0, 36),
+        ghost: existingIdx >= 0 ? (leaderboardData[existingIdx].ghost || []) : [],
         ts: Date.now()
       };
 
-      leaderboardData.push(newEntry);
+      if (existingIdx >= 0) {
+        leaderboardData[existingIdx] = newEntry;
+      } else {
+        leaderboardData.push(newEntry);
+      }
       leaderboardData.sort((a, b) => (b.score || 0) - (a.score || 0));
       saveLocalLeaderboard(leaderboardData);
       renderLeaderboardUI();
@@ -4024,7 +4339,7 @@
         const res = await fetch('/api/leaderboard', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newEntry)
+          body: JSON.stringify({ ...newEntry, replaceExisting: true })
         });
         if (res.ok) {
           const data = await res.json();
@@ -4038,7 +4353,7 @@
 
       nameInp.value = '';
       scoreInp.value = '';
-      showGtaToast('ADMIN INJECTION', `ADDED ${callsign} (${customScore.toLocaleString()})`);
+      showGtaToast('ADMIN INJECTION', `SAVED ${callsign} (${customScore.toLocaleString()})`);
     });
 
     document.getElementById('tabCombatBtn').addEventListener('click', () => {

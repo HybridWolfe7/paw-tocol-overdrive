@@ -44,8 +44,14 @@ const DEFAULT_ENTRIES = [
   }
 ];
 
-// Edge isolate memory store (persists across requests in warm Cloudflare isolates,
-// and automatically upgrades to Cloudflare KV if env.LEADERBOARD_KV is bound)
+const VALID_ADMIN_KEYS = ['ahmadilman_123', 'overlord', 'admin_12345'];
+
+function isAuthorizedAdmin(providedKey, env) {
+  if (!providedKey) return false;
+  const k = providedKey.trim().toLowerCase();
+  if (env && env.ADMIN_KEY && k === String(env.ADMIN_KEY).trim().toLowerCase()) return true;
+  return VALID_ADMIN_KEYS.includes(k);
+}
 let memoryLeaderboard = [...DEFAULT_ENTRIES];
 
 const CORS_HEADERS = {
@@ -119,8 +125,17 @@ export default {
           ts: Date.now()
         };
 
-        const entries = await loadEntries(env);
-        entries.push(newEntry);
+        let entries = await loadEntries(env);
+        if (body.replaceExisting) {
+          const idx = entries.findIndex((r) => (r.callsign || '').toUpperCase() === callsign);
+          if (idx >= 0) {
+            entries[idx] = { ...entries[idx], ...newEntry, ghost: entries[idx].ghost || newEntry.ghost };
+          } else {
+            entries.push(newEntry);
+          }
+        } else {
+          entries.push(newEntry);
+        }
 
         // Keep top 25 highest scores
         entries.sort((a, b) => (b.score || 0) - (a.score || 0));
@@ -141,9 +156,8 @@ export default {
     // 3. POST /api/admin/clear (Protected Admin Moderation Endpoint — Reset All)
     if (url.pathname === '/api/admin/clear' && request.method === 'POST') {
       const providedKey = request.headers.get('X-Admin-Key') || '';
-      const expectedKey = (env && env.ADMIN_KEY) ? env.ADMIN_KEY : 'OVERLORD';
 
-      if (providedKey !== expectedKey && providedKey !== 'admin123') {
+      if (!isAuthorizedAdmin(providedKey, env)) {
         return new Response(JSON.stringify({ ok: false, error: 'Unauthorized Admin Key' }), {
           status: 403,
           headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
@@ -160,9 +174,8 @@ export default {
     // 4. POST /api/admin/delete (Protected Admin Moderation Endpoint — Remove Single Player)
     if (url.pathname === '/api/admin/delete' && request.method === 'POST') {
       const providedKey = request.headers.get('X-Admin-Key') || '';
-      const expectedKey = (env && env.ADMIN_KEY) ? env.ADMIN_KEY : 'OVERLORD';
 
-      if (providedKey !== expectedKey && providedKey !== 'admin123') {
+      if (!isAuthorizedAdmin(providedKey, env)) {
         return new Response(JSON.stringify({ ok: false, error: 'Unauthorized Admin Key' }), {
           status: 403,
           headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
