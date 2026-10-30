@@ -13,3 +13,7 @@ Thumbs.db
 .idea/
 *.log
 
+# Private Owner Cheat Sheet (Never pushed to GitHub)
+ADMIN_SECRETS.md
+
+
